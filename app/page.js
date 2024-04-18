@@ -1,7 +1,10 @@
 import {currentUser} from "@clerk/nextjs/server";
+import { SignInButton} from '@clerk/nextjs';
+
 
 export default  async function Home() {
     const user = await currentUser();
+    const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://joinsangha.co' : 'http://localhost:3000';
     return (
         <div>
             <main>
@@ -10,7 +13,12 @@ export default  async function Home() {
                     {user ? <h1>{`Welcome ${user.firstName} ${user.lastName}!`}</h1> : <h1>Welcome to Our Sangha!</h1>}
 
                     <p>Meditate with yogis from around the world, <span className="bold">on your schedule.</span></p>
-                    <button className="button">Try for Free</button>
+                    <SignInButton 
+                        redirectUrl={redirectUrl}
+                                  mode={'redirect'}>
+                        <button className="button">Try for Free</button>
+                    </SignInButton>
+                    
                     <p className="small">No Credit Card Required</p>
                 </div>
                 <div className="image">

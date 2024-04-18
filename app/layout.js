@@ -17,12 +17,19 @@ export default function RootLayout({children}) {
             <body className={inter.className}>
             <header>
                 <div className="logo">Sangha</div>
-                <nav>
-                    <SignInButton redirectUrl={redirectUrl}
+                <nav className="flex flex-row gap-4">
+                    <SignInButton 
+                           className="mt-3 text-xl"
+                       redirectUrl={redirectUrl}
                                   mode={'redirect'}>
                         <span>Sign In</span>
                     </SignInButton>
-                    <button className="button">Join</button>
+                    <SignInButton 
+                            className="mt-3 text-xl"
+                            redirectUrl={redirectUrl}
+                                  mode={'redirect'}>
+                        <span>Join</span>
+                    </SignInButton>
                 </nav>
             </header>
 
