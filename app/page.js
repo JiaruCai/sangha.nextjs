@@ -1,23 +1,9 @@
-import {SignInButton} from "@clerk/nextjs";
 import {currentUser} from "@clerk/nextjs/server";
-
 
 export default  async function Home() {
     const user = await currentUser();
-
-    const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://joinsangha.co' : 'http://localhost:3000';
     return (
         <div>
-            <header>
-                <div className="logo">Sangha</div>
-                <nav>
-                    <SignInButton  redirectUrl={redirectUrl}
-                                   mode={'redirect'}>
-                        <span>Sign In</span>
-                    </SignInButton>
-                    <button className="button">Join</button>
-                </nav>
-            </header>
             <main>
                 <div className="content">
 
@@ -64,15 +50,6 @@ export default  async function Home() {
                     </div>
                 </div>
             </div>
-            <footer>
-                <div className="footer-left">
-                    © 2024 FAMILIA IO Inc.
-                </div>
-                <div className="footer-right">
-                    <a href="#" className="footer-link">About</a>
-                    <a href="#" className="footer-link">Contact</a>
-                </div>
-            </footer>
         </div>
     );
 }
