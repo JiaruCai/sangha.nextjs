@@ -5,12 +5,13 @@ import {currentUser} from "@clerk/nextjs/server";
 export default  async function Home() {
     const user = await currentUser();
 
+    const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://joinsangha.co' : 'http://localhost:3000';
     return (
         <div>
             <header>
                 <div className="logo">Sangha</div>
                 <nav>
-                    <SignInButton  redirectUrl={"http://localhost:3000"}
+                    <SignInButton  redirectUrl={redirectUrl}
                                    mode={'redirect'}>
                         <span>Sign In</span>
                     </SignInButton>
