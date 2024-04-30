@@ -1,0 +1,55 @@
+/* app/contact/Contact.module.css */
+
+.main {
+    max-width: 800px; /* Increased max-width for a wider layout */
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+.contactHeading {
+    margin-right: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.textarea {
+    height: 250px;
+    width: 100%; /* Set width to 100% for a wider textarea */
+    margin-bottom: 30px;
+    resize: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Arial', sans-serif;
+}
+
+.input {
+    height: 60px;
+    width: 100%; /* Set width to 100% for a wider input field */
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Arial', sans-serif;
+}
+
+.button {
+    cursor: pointer;
+    padding: 15px 30px;
+    background-color: #7ebdb4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #5b8f87;
+}

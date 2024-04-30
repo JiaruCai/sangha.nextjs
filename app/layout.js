@@ -1,12 +1,13 @@
 import {Inter} from "next/font/google";
-import {ClerkProvider, SignInButton} from '@clerk/nextjs'
+import {ClerkProvider, SignInButton} from '@clerk/nextjs';
+import Link from 'next/link';  // Import Link from Next.js
 import "./globals.css";
 
 const inter = Inter({subsets: ["latin"]});
 
 export const metadata = {
     title: "Join Sangha",
-    description: "Meditate today so you don't die!",
+    description: "Meditate today on your own schedule!",
 };
 
 export default function RootLayout({children}) {
@@ -16,11 +17,16 @@ export default function RootLayout({children}) {
             <html lang="en">
             <body className={inter.className}>
             <header>
-                <div className="logo">Sangha</div>
+                <div className="logo">
+                    <Link href="/" legacyBehavior>
+                        <a className="logo-link">Sangha</a>
+                    </Link>
+                </div>
+            
                 <nav className="flex flex-row gap-4">
                     <SignInButton 
-                           className="mt-3 text-xl"
-                       redirectUrl={redirectUrl}
+                        className="mt-3 text-xl"
+                        redirectUrl={redirectUrl}
                                   mode={'redirect'}>
                         <span>Sign In</span>
                     </SignInButton>
