@@ -248,7 +248,7 @@ footer {
     }
 
     .image {
-        width: auto;  /* Full width images */
+        width: 250px;  /* Full width images */
         max-width: 100%;  /* Ensure image doesn't exceed container width */
         margin-top: 20px;  /* Space above the image */
         margin-right: 0;  /* Reset any right margin */
