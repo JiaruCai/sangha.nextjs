@@ -1,3 +1,4 @@
+/* Combined CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -42,10 +43,17 @@ nav .button:hover {
     border-radius: 50px; /* Rounded borders on hover */
 }
 
-main, .page-two, .page-three {
+.page-container,
+.page-two {
+    justify-content: center; /* Center horizontally */
+    text-align: center; /* Center text */
+}
+
+.main-page,
+.page-two {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Adjusted to space between */
     padding: 20px;
     box-sizing: border-box;
     min-height: 100vh; /* Full viewport height */
@@ -53,9 +61,13 @@ main, .page-two, .page-three {
     transition: transform 0.5s ease-out; /* Faster transition for smoother effect */
 }
 
-.content, .page-content {
-    text-align: left;
+.text-container {
     max-width: 600px; /* Adjust as needed */
+    margin-right: 20px; /* Space between text and image */
+}
+
+.image-container {
+    flex-shrink: 0; /* Prevent image from shrinking */
 }
 
 h1, .big-text {
@@ -101,9 +113,8 @@ p, .small-text {
     left: 0;
     width: 100%;
     height: 100vh;
-    transform: translate3d(0, 200vh, 0); /* Start below the viewport */
+    transform: translateY(100%); /* Move the page down by its own height */
     transition: transform 0.7s ease-in-out; /* Smooth transition for page effect */
-    visibility: hidden; /* Hidden by default */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,6 +122,7 @@ p, .small-text {
     text-align: center;
     background: beige; /* Ensure background color is consistent */
 }
+
 
 .image-block {
     display: flex;
@@ -124,7 +136,6 @@ p, .small-text {
     width: 33%; /* Divide the width by three for each image block */
     padding: 10px; /* Padding around each image info block for better spacing */
 }
-
 
 .image-info img {
     width: 100%; /* Ensure images fit within their div */
@@ -199,6 +210,11 @@ footer {
         padding: 10px; /* Reduced padding */
     }
 
+    .text-container {
+        margin-right: 0; /* Remove margin for smaller screens */
+        margin-bottom: 20px; /* Add space between text and image on smaller screens */
+    }
+
     .content, .page-content {
         max-width: 100%; /* Full width */
         padding: 0 10px; /* Add padding on the sides for better reading */
@@ -231,4 +247,3 @@ footer {
         padding: 4px 8px; /* Smaller padding for links */
     }
 }
-

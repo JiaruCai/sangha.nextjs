@@ -1,6 +1,7 @@
-import {Inter} from "next/font/google";
-import {ClerkProvider, SignInButton} from '@clerk/nextjs';
-import Link from 'next/link';  // Import Link from Next.js
+import { ClerkProvider, SignInButton, SignOutButton } from '@clerk/nextjs';
+import { Inter } from 'next/font/google'; // Import Inter font
+import Link from 'next/link';
+import { currentUser } from '@clerk/nextjs/server'; // Import currentUser function
 import "./globals.css";
 
 const inter = Inter({subsets: ["latin"]});
@@ -10,8 +11,10 @@ export const metadata = {
     description: "Meditate today on your own schedule!",
 };
 
-export default function RootLayout({children}) {
+export default async function RootLayout({ children }) {
+    const user = await currentUser();
     const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://joinsangha.co' : 'http://localhost:3000';
+
     return (
         <ClerkProvider>
             <html lang="en">
@@ -24,18 +27,24 @@ export default function RootLayout({children}) {
                 </div>
             
                 <nav className="flex flex-row gap-4">
-                    <SignInButton 
-                        className="mt-3 text-xl"
-                        redirectUrl={redirectUrl}
-                                  mode={'redirect'}>
-                        <span>Sign In</span>
-                    </SignInButton>
-                    <SignInButton 
-                            className="mt-3 text-xl"
-                            redirectUrl={redirectUrl}
-                                  mode={'redirect'}>
-                        <span>Join</span>
-                    </SignInButton>
+                    {user ? (
+                        <SignOutButton /> // Render sign-out button if user is logged in
+                    ) : (
+                        <>
+                            <SignInButton 
+                                className="mt-3 text-xl"
+                                redirectUrl={redirectUrl}
+                                mode={'redirect'}>
+                                <span>Sign In</span>
+                            </SignInButton>
+                            <SignInButton 
+                                className="mt-3 text-xl"
+                                redirectUrl={redirectUrl}
+                                mode={'redirect'}>
+                                <span>Join</span>
+                            </SignInButton>
+                        </>
+                    )}
                 </nav>
             </header>
 

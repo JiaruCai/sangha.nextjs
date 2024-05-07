@@ -1,0 +1,10 @@
+// app/server-component.js
+
+export default function ServerComponent() {
+  return (
+    <div>
+      {/* Your server-side component content */}
+      <h1>This is a Server Component</h1>
+    </div>
+  );
+}
