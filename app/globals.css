@@ -251,7 +251,11 @@ footer {
         width: 100%;  /* Full width images */
         max-width: 100%;  /* Ensure image doesn't exceed container width */
         margin-top: 20px;  /* Space above the image */
+        margin-right: 0;  /* Reset any right margin */
+        padding-right: 0; /* Reset any right padding */
+        box-sizing: border-box; /* Ensure padding and border are included in width */
     }
+    
 
     footer {
         flex-direction: column;  /* Stack footer content vertically */
