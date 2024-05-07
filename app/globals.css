@@ -248,8 +248,9 @@ footer {
     }
 
     .image {
-        width: 250px;  /* Full width images */
+        width: auto;  /* Auto width for images */
         max-width: 100%;  /* Ensure image doesn't exceed container width */
+        height: auto;  /* Maintain aspect ratio */
         margin-top: 20px;  /* Space above the image */
         margin-right: 0;  /* Reset any right margin */
         padding-right: 0; /* Reset any right padding */
