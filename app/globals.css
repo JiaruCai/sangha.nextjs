@@ -223,46 +223,47 @@ footer {
 
 @media (max-width: 768px) {
     .logo {
-        font-size: 24px;
+        font-size: 24px;  /* Smaller logo size for mobile */
     }
 
     header {
-        padding: 5px 10px;
+        padding: 5px 10px;  /* Reduced padding for header on mobile */
     }
 
     nav .button {
-        font-size: 14px;
-        padding: 5px 8px;
+        font-size: 14px;  /* Smaller button font size */
+        padding: 5px 8px;  /* Reduced padding for navigation buttons */
     }
 
     .main-page, .page-two {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
+        flex-direction: row;  /* Stack the elements horizontally */
+        align-items: center;  /* Center align items */
+        padding: 10px;  /* Uniform padding */
     }
 
     .text-container, .image-container {
-        width: 100%;
-        padding-right: 0;
-        margin-left: 0;
+        width: 100%;  /* Full width containers */
+        padding-right: 0;  /* Remove right padding */
+        margin-left: 0;  /* Remove left margin */
     }
 
     .image {
-        width: 100%;
-        max-width: 100%;
-        margin-top: 20px;
+        width: 100%;  /* Full width images */
+        max-width: 100%;  /* Ensure image doesn't exceed container width */
+        margin-top: 20px;  /* Space above the image */
     }
 
     footer {
-        flex-direction: column;
+        flex-direction: column;  /* Stack footer content vertically */
     }
 
     .footer-left, .footer-right {
-        text-align: center;
-        padding: 5px 0;
+        text-align: center;  /* Center text alignment for footer */
+        padding: 5px 0;  /* Padding adjustment */
     }
 
     .footer-link {
-        padding: 4px 8px;
+        padding: 4px 8px;  /* Smaller padding for footer links */
     }
 }
+
