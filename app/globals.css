@@ -10,6 +10,7 @@ body, html {
     font-family: Arial, sans-serif;
     background-color: beige; /* Main background color */
     overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: scroll; /* Enable vertical scrolling */
 }
 
 header {
@@ -43,115 +44,144 @@ nav .button:hover {
     border-radius: 50px; /* Rounded borders on hover */
 }
 
-.page-container,
-.page-two {
-    justify-content: center; /* Center horizontally */
-    text-align: center; /* Center text */
+.signInButton, .signOutButton {
+    display: inline-block;
+    padding: 10px 20px; /* Adjust padding to visually center the text */
+    margin-top: 10px;
+    background-color: transparent; /* No background */
+    color: #000000; /* Darker color for better visibility */
+    border: 2px solid #ac8b8b; /* Dark border for better visibility */
+    border-radius: 20px; /* Rounded edges */
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    text-align: center; /* Ensures text is horizontally centered */
+    text-transform: uppercase;
+    font-weight: bold; /* Making the text bold for better readability */
+    vertical-align: middle; /* Helps center text vertically */
 }
 
-.main-page,
-.page-two {
+.signInButton:hover, .signOutButton:hover {
+    background-color: #ECF0F1; /* Light grey background on hover */
+    color: #000; /* Optionally change text color on hover for contrast */
+    border-color: #ac8b8b; /* Optionally change border color on hover */
+}
+
+.page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px; /* Space between main page and page two */
+}
+
+.main-page, .page-two {
+    height: 100vh; /* Full screen height */
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Adjusted to space between */
-    padding: 20px;
-    box-sizing: border-box;
-    min-height: 100vh; /* Full viewport height */
-    position: relative;
-    transition: transform 0.5s ease-out; /* Faster transition for smoother effect */
+    justify-content: space-between;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 0; /* Spacing top and bottom */
 }
 
 .text-container {
-    max-width: 600px; /* Adjust as needed */
-    margin-right: 20px; /* Space between text and image */
+    flex: 1;
+    padding-right: 20px;
 }
 
 .image-container {
-    flex-shrink: 0; /* Prevent image from shrinking */
+    flex-shrink: 0;
+    width: 50%; /* Control the width of image container */
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    max-width: 500px; /* Control the max width of the image */
 }
 
 h1, .big-text {
-    font-size: 36px; /* Larger font size for the title */
+    font-size: 36px;
 }
 
 p, .small-text {
-    font-size: 16px; /* Smaller font for description */
+    font-size: 16px;
     margin: 5px 0;
 }
 
 .bold {
-    font-weight: bold; /* Bold specific part of text */
+    font-weight: bold;
 }
 
 .button {
-    background-color: #d48d69; /* Button color similar to the header */
+    background-color: #d48d69;
     color: white;
     border: none;
     padding: 12px 24px;
-    transition: transform 0.3s ease;
     cursor: pointer;
     font-size: 18px;
     margin-top: 20px;
-    border-radius: 30px; /* More rounded shape */
+    border-radius: 30px;
 }
 
 .button:hover {
-    transform: scale(1.1); /* Button becomes bigger on hover */
+    transform: scale(1.1);
 }
 
 .small {
     font-size: 12px;
-    font-weight: 300; /* Thinner font weight */
+    font-weight: 300;
     opacity: 0.6;
     margin-top: 5px;
 }
 
-/* Page Three styles */
 .page-three {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    transform: translateY(100%); /* Move the page down by its own height */
-    transition: transform 0.7s ease-in-out; /* Smooth transition for page effect */
+    transform: translateY(100%);
+    transition: transform 0.7s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     text-align: center;
-    background: beige; /* Ensure background color is consistent */
+    background: beige;
 }
-
 
 .image-block {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    margin: 20px 0; /* Space between images */
+    margin: 20px 0;
 }
 
 .image-info {
     text-align: center;
-    width: 33%; /* Divide the width by three for each image block */
-    padding: 10px; /* Padding around each image info block for better spacing */
+    width: 33%;
+    padding: 10px;
 }
 
 .image-info img {
-    width: 100%; /* Ensure images fit within their div */
+    width: 100%;
     height: auto;
-    margin-bottom: 10px; /* Space below the image before the title */
+    margin-bottom: 10px;
 }
 
 .image-title {
     font-size: 18px;
     font-weight: bold;
-    margin: 10px 0; /* Space above and below the title */
+    margin: 10px 0;
 }
 
 .image-info p {
     font-size: 14px;
-    padding: 0 10px; /* Padding around the text for better readability */
+    padding: 0 10px;
 }
 
 footer {
@@ -182,7 +212,7 @@ footer {
     background-color: transparent;
     padding: 8px 16px;
     margin: 0 5px;
-    border-radius: 30px; /* Rounded corners like your buttons */
+    border-radius: 30px;
     transition: all 0.3s ease;
 }
 
@@ -191,59 +221,48 @@ footer {
     color: #C9AD39;
 }
 
-/* Media queries for mobile devices */
 @media (max-width: 768px) {
     .logo {
-        font-size: 24px; /* Smaller font size for mobile */
+        font-size: 24px;
     }
 
     header {
-        padding: 5px 10px; /* Smaller padding */
+        padding: 5px 10px;
     }
 
     nav .button {
-        font-size: 14px; /* Smaller font size for buttons */
-        padding: 5px 8px; /* Smaller padding */
+        font-size: 14px;
+        padding: 5px 8px;
     }
 
-    main, .page-two, .page-three {
-        padding: 10px; /* Reduced padding */
+    .main-page, .page-two {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
     }
 
-    .text-container {
-        margin-right: 0; /* Remove margin for smaller screens */
-        margin-bottom: 20px; /* Add space between text and image on smaller screens */
+    .text-container, .image-container {
+        width: 100%;
+        padding-right: 0;
+        margin-left: 0;
     }
 
-    .content, .page-content {
-        max-width: 100%; /* Full width */
-        padding: 0 10px; /* Add padding on the sides for better reading */
-    }
-
-    .image-info {
-        width: 100%; /* Full width for image containers on smaller screens */
-        padding: 5px; /* Smaller padding */
-    }
-
-    .image-info img {
-        margin-bottom: 5px; /* Reduced space below images */
-    }
-
-    .image-title, .image-info p {
-        font-size: 16px; /* Adjust font size for better readability on mobile */
+    .image {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 20px;
     }
 
     footer {
-        padding: 5px 10px; /* Reduced padding in footer */
-        flex-direction: column; /* Stack footer content vertically */
+        flex-direction: column;
     }
 
     .footer-left, .footer-right {
-        text-align: center; /* Center alignment for footer content */
-        padding: 5px 0; /* Adjust padding */
+        text-align: center;
+        padding: 5px 0;
     }
 
     .footer-link {
-        padding: 4px 8px; /* Smaller padding for links */
+        padding: 4px 8px;
     }
 }

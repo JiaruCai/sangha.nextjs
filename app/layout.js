@@ -28,17 +28,17 @@ export default async function RootLayout({ children }) {
             
                 <nav className="flex flex-row gap-4">
                     {user ? (
-                        <SignOutButton /> // Render sign-out button if user is logged in
+                        <SignOutButton className="signOutButton"/> // Render sign-out button if user is logged in
                     ) : (
                         <>
                             <SignInButton 
-                                className="mt-3 text-xl"
+                                className="signInButton"
                                 redirectUrl={redirectUrl}
                                 mode={'redirect'}>
                                 <span>Sign In</span>
                             </SignInButton>
                             <SignInButton 
-                                className="mt-3 text-xl"
+                                className="signInButton"
                                 redirectUrl={redirectUrl}
                                 mode={'redirect'}>
                                 <span>Join</span>

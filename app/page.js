@@ -1,4 +1,3 @@
-// page.js
 import { currentUser } from "@clerk/nextjs/server";
 import { SignInButton } from '@clerk/nextjs';
 import ClientCalendar from './client-calendar';
@@ -17,29 +16,33 @@ export default async function Page() {
                 </div>
             ) : (
                 <>
-                    <h1>Welcome to Our Sangha!</h1>
-                    <p>Meditate with yogis from around the world, <span className="bold">on your schedule.</span></p>
-                    <SignInButton 
+                    <div className="main-page">
+                    <div className="text-container">
+                        <h1>Welcome to Our Sangha!</h1>
+                        <p>Meditate with yogis from around the world, on your schedule.</p>
+                        <SignInButton 
                         redirectUrl={redirectUrl}
                         mode={'redirect'}>
                         <button className="button">Try for Free</button>
-                    </SignInButton>
-                    <p className="small">No Credit Card Required</p>
-                    <div className="image">
-                        <img src="/Pictures/image1.jpg" alt="Meditation Image" style={{ "width": "300px", "height": "auto" }} />
+                        </SignInButton>
+                        <p>No Credit Card Required</p>
                     </div>
+                    <div className="image-container">
+                        <img src="/Pictures/image1.jpg" alt="Meditation Image" className="image"/>
+                    </div>
+                </div>
                 </>
             )}
 
             {/* Page 2 content */}
             {!user && (
                 <div className="page-two">
-                    <div className="page-content">
-                        <div className="big-text">It is hard to meditate regularly when we do it alone.</div>
-                        <div className="small-text">It is easier when we do it together.</div>
+                    <div className="text-container">
+                        <h1>It is hard to meditate regularly when we do it alone.</h1>
+                        <p>It is easier when we do it together.</p>
                     </div>
-                    <div className="image">
-                        <img src="/Pictures/image2.jpg" alt="Meditation Image" style={{ "width": "300px", "height": "auto" }} />
+                    <div className="image-container">
+                        <img src="/Pictures/image2.jpg" alt="Meditation Image" className="image"/>
                     </div>
                 </div>
             )}
