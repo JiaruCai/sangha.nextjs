@@ -1,4 +1,4 @@
-// app/client-calendar.js
+//  app/client-calendar.js
 
 'use client';
 import { useState } from 'react';
@@ -43,6 +43,8 @@ export default function ClientCalendar({ children }) {
         style={{ height: 500 }}
         onSelectEvent={handleSelectEvent}
         defaultDate={currentDate} // Set default date to current date
+        views={['week']} // Set default view to week
+        defaultView="week" // Set default view to week
       />
       {children}
     </>
