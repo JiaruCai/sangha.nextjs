@@ -236,7 +236,7 @@ footer {
     }
 
     .main-page, .page-two {
-        flex-direction: row;  /* Stack the elements horizontally */
+        flex-direction: column;  /* Stack the elements horizontally */
         align-items: center;  /* Center align items */
         padding: 10px;  /* Uniform padding */
     }
