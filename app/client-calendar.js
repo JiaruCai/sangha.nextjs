@@ -110,7 +110,7 @@ export default function ClientCalendar({ children }) {
             <span className="close" onClick={handleClosePopup}>
               &times;
             </span>
-            <p>Still inventing time machine~ Can't travel backwards at the moment!</p>
+            <p>Still inventing time machine~ Can&apos;t travel backwards at the moment!</p>
           </div>
         </div>
       )}
