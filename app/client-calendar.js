@@ -33,7 +33,7 @@ export default function ClientCalendar({ children }) {
     const currentDateTime = moment();
     if (selectedStartTime.isAfter(currentDateTime)) {
       // Construct the Jitsi meeting link based on the selected time slot
-      const jitsiMeetingLink = 'https://meet.jit.si/moderated/1bd3a4f007192882451a4b1f59871f7d4ce0ccc826130c8dbf0b6e485fb482d6';
+      const jitsiMeetingLink = 'https://3lxnq0a6m89.typeform.com/to/Ch2iSbtf';
       // Open the Jitsi meeting link in a new tab
       window.open(jitsiMeetingLink, '_blank');
     } else {
