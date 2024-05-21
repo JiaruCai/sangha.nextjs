@@ -88,6 +88,9 @@ export default function ClientCalendar({ children }) {
 
   return (
     <>
+    <div className="user-instructions">
+        Please use cursor to highlight a time slot to start our survey. We will be happy to match you with our community!
+    </div>
       <Calendar
         localizer={localizer}
         events={events}
