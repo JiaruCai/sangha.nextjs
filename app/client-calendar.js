@@ -10,6 +10,13 @@ const localizer = momentLocalizer(moment);
 export default function ClientCalendar({ children }) {
   const [events, setEvents] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    setIsMobile(userAgent.includes('android') || userAgent.includes('iphone') || userAgent.includes('ipad'));
+  }, []);
+  
 
   // Calculate the start of the current week
   const startOfWeek = moment().startOf('week');
@@ -56,6 +63,11 @@ export default function ClientCalendar({ children }) {
       <div
         {...props}
         onTouchStart={() => handleSelectSlot(props.slotInfo)} // Handle touch start event
+        onTouchEnd={() => {
+          if (isMobile) {
+            alert("For mobile app users, please long press and let go the timeslots to start the survey!");
+          }
+        }}        
         style={{
           position: 'relative',
           paddingLeft: '10px',
