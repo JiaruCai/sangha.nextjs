@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -32,10 +32,8 @@ export default function ClientCalendar({ children }) {
     const selectedStartTime = moment(slotInfo.start);
     const currentDateTime = moment();
     if (selectedStartTime.isAfter(currentDateTime)) {
-      // Construct the Jitsi meeting link based on the selected time slot
-      const jitsiMeetingLink = 'https://3lxnq0a6m89.typeform.com/to/Ch2iSbtf';
-      // Open the Jitsi meeting link in a new tab
-      window.open(jitsiMeetingLink, '_blank');
+      const surveyLink = 'https://3lxnq0a6m89.typeform.com/to/Ch2iSbtf';
+      window.open(surveyLink, '_blank');
     } else {
       // Do nothing if the selected slot is before the current date and time
       setShowPopup(true);
@@ -57,6 +55,7 @@ export default function ClientCalendar({ children }) {
     return (
       <div
         {...props}
+        onTouchStart={() => handleSelectSlot(props.slotInfo)} // Handle touch start event
         style={{
           position: 'relative',
           paddingLeft: '10px',
@@ -69,13 +68,13 @@ export default function ClientCalendar({ children }) {
             style={{
               position: 'absolute',
               top: '50%',
-              left: '-40px',
-              transform: 'translateY(-50%)',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               backgroundColor: 'blue',
               color: 'white',
               border: 'none',
-              padding: '5px 10px',
-              borderRadius: '5px',
+              padding: '0.5rem 1rem', // Changed to rem unit
+              borderRadius: '0.5rem', // Changed to rem unit
               cursor: 'pointer',
             }}
           >
@@ -86,10 +85,22 @@ export default function ClientCalendar({ children }) {
     );
   };
 
+  // Custom header format
+  const CustomHeader = ({ label }) => {
+    return (
+      <div>
+        <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '0.6rem' }}>{label}</h3>
+      </div>
+    );
+  };
+
+  
+  
+
   return (
     <>
     <div className="user-instructions">
-        Please use cursor to highlight a time slot to start our survey. We will be happy to match you with our community!
+        Please use cursor to highlight a time slot to start our survey. We will be happy to match you with our community! 
     </div>
       <Calendar
         localizer={localizer}
@@ -105,8 +116,10 @@ export default function ClientCalendar({ children }) {
         selectable={true} // Enable slot selection
         components={{
           timeSlotWrapper: renderTimeSlot,
+          header: CustomHeader, // Custom header component
         }}
       />
+      <div style={{ marginBottom: '5rem' }} /> {/* Added extra space after the calendar */}
       {showPopup && (
         <div className="popup-overlay" onClick={handleClosePopup}>
           <div className="popup">
