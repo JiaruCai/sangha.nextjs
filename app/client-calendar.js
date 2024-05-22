@@ -10,12 +10,38 @@ const localizer = momentLocalizer(moment);
 export default function ClientCalendar({ children }) {
   const [events, setEvents] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
     setIsMobile(userAgent.includes('android') || userAgent.includes('iphone') || userAgent.includes('ipad'));
   }, []);
+
+  useEffect(() => {
+    // Check if the user is logged in (replace this with your actual login state)
+    setIsLoggedIn(true);
+
+    // Check if the user is on a mobile device
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    setIsMobile(userAgent.includes('android') || userAgent.includes('iphone') || userAgent.includes('ipad'));
+  }, []);
+
+  useEffect(() => {
+    // Display the popup window after a delay if the user is logged in and on a mobile device
+    if (isLoggedIn && isMobile) {
+      const delay = 3000; // 3000 milliseconds (3 seconds) delay
+      const timeoutId = setTimeout(() => {
+        setShowPopup(true);
+      }, delay);
+  
+      // Clean up the timeout on component unmount
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isLoggedIn, isMobile]);
+  
+
+  
   
 
   // Calculate the start of the current week
@@ -111,9 +137,11 @@ export default function ClientCalendar({ children }) {
 
   return (
     <>
-    <div className="user-instructions">
-        Please use cursor to highlight a time slot to start our survey. We will be happy to match you with our community! 
-    </div>
+    {!isMobile && (
+        <div className="user-instructions">
+          Please use cursor to highlight a time slot to start our survey. We will be happy to match you with our community!
+        </div>
+      )}
       <Calendar
         localizer={localizer}
         events={events}
@@ -141,6 +169,16 @@ export default function ClientCalendar({ children }) {
             <p>Still inventing time machine~ Can&apos;t travel backwards at the moment!</p>
           </div>
         </div>
+      )}
+      {showPopup && (
+        <div className="popup-overlay" onClick={handleClosePopup}>
+          <div className="popup" style={{ width: '80%', maxWidth: '400px' }}>
+            <span className="close" onClick={handleClosePopup}>
+              &times;
+            </span>
+            <p style={{ textAlign: 'center', fontSize: '1rem', padding: '0.1rem' }}>For mobile app users, please press and let go the timeslots to start the survey!</p>
+          </div>
+        </div>  
       )}
       {children}
     </>
