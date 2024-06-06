@@ -19,7 +19,7 @@ export default async function Page() {
                     <div className="main-page">
                     <div className="text-container">
                         <h1>Welcome to Our Sangha!</h1>
-                        <p>Meditate with yogis from around the world, on your schedule.</p>
+                        <p>Meditate with yogis from around the world, all backgrounds, on your schedule.</p>
                         <SignInButton 
                         redirectUrl={redirectUrl}
                         mode={'redirect'}>
@@ -28,7 +28,7 @@ export default async function Page() {
                         <p>No Credit Card Required</p>
                     </div>
                     <div className="image-container">
-                        <img src="/Pictures/image1.jpg" alt="Meditation Image" className="image"/>
+                        <img src="/Pictures/image6.jpg" alt="Meditation Image" className="image"/>
                     </div>
                 </div>
                 </>
@@ -42,33 +42,7 @@ export default async function Page() {
                         <p>It is easier when we do it together.</p>
                     </div>
                     <div className="image-container">
-                        <img src="/Pictures/image2.jpg" alt="Meditation Image" className="image"/>
-                    </div>
-                </div>
-            )}
-
-            {/* Page 3 content */}
-            {!user && (
-                <div className="page-three">
-                    <div className="page-content">
-                        <h2>With Sangha, you never have to meditate alone again! Here is how it works:</h2>
-                        <div className="image-block">
-                            <div className="image-info">
-                                <img src="/Pictures/image3.jpg" alt="Schedule a Meditation" />
-                                <p className="image-title">1, Schedule a Meditation</p>
-                                <p>Book a 15, 30, or 45 minute time slot that works for you! We’ll match you with another yogi.</p>
-                            </div>
-                            <div className="image-info">
-                                <img src="/Pictures/image4.jpg" alt="Meditate!" />
-                                <p className="image-title">2, Meditate!</p>
-                                <p>Join the call, introduce yourselves, and then meditate!</p>
-                            </div>
-                            <div className="image-info">
-                                <img src="/Pictures/image5.jpg" alt="Emotional Check-in" />
-                                <p className="image-title">3, Emotional Check-in</p>
-                                <p>At the end of the call, you’ll each have a moment to share your feelings.</p>
-                            </div>
-                        </div>
+                        <img src="/Pictures/image7.jpg" alt="Meditation Image" className="image"/>
                     </div>
                 </div>
             )}

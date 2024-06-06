@@ -29,7 +29,7 @@ export default function About() {
                 <h2 style={{ fontWeight: 'bold' }}>The Difference We Make</h2>
                 <p>Realizing that many do not have the luxury to set aside time for lengthy meditation retreats, we innovated a solution—online meditation matching. This platform allows individuals to connect with others across the globe for short, guided meditation sessions online, making mental well-being accessible to everyone, anytime and anywhere.</p>
                 
-                <p>We believe deeply in the power of our product to bring peace and hope to those living in a crowded yet isolated world. Join Sangha is more than just a meditation platform—it&apos;s a movement towards a more mindful, connected society.</p>
+                <p>We believe deeply in the power of our product to bring peace and hope to those living in a crowded yet isolated world. Join Sangha is more than just a meditation platform —it&apos;s a movement towards a more mindful, connected society. We, founders here at Join Sangha, hope that one day, meditation will transcend religious practice like yoga and help with improving mental health.</p>
             </section>
         </main>
     );
