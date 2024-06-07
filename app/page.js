@@ -18,7 +18,7 @@ export default async function Page() {
                 <>
                     <div className="main-page">
                     <div className="text-container">
-                        <h1>Welcome to Our Sangha!</h1>
+                        <h1 class="cartoon-heading">Welcome to Our Sangha!</h1>
                         <p>Meditate with yogis from around the world, all backgrounds, on your schedule.</p>
                         <SignInButton 
                         redirectUrl={redirectUrl}
