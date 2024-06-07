@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default function About() {
     return (
         <main style={{ 
@@ -6,20 +8,19 @@ export default function About() {
             alignItems: 'center', 
             justifyContent: 'center', 
             textAlign: 'center', 
-            padding: '50px',
-            fontFamily: "&apos;Merriweather&apos;, serif", // Replace ' with &apos;
+            padding: '3rem',
+            fontFamily: "'Merriweather', serif",
             color: '#333'
         }}>
             <h1 style={{ marginBottom: '0.5em' }}>About Us</h1>
             <section style={{ 
-                maxWidth: '800px', 
+                maxWidth: '50rem', 
                 lineHeight: '1.7',
-                fontSize: '18px',
+                fontSize: '1.125rem',
             }}>
-                <p style={{ fontSize: '21px', fontWeight: '300' }}>
+                <p style={{ fontSize: '1.3125rem', fontWeight: '300' }}>
                     Welcome to Join Sangha, where we turn meditation into a community experience.
                 </p>
-                {/* Apply bold style to subtitles */}
                 <h2 style={{ fontWeight: 'bold' }}>Our Story</h2>
                 <p>In the midst of the tech industry&apos;s tumultuous layoff season, where companies often manipulate performance improvement plans to dismiss employees and avoid severance payouts, the need for personal peace has never been more acute. This environment has left many searching for solace and mental clarity.</p>
                 
@@ -31,6 +32,18 @@ export default function About() {
                 
                 <p>We believe deeply in the power of our product to bring peace and hope to those living in a crowded yet isolated world. Join Sangha is more than just a meditation platform —it&apos;s a movement towards a more mindful, connected society. We, founders here at Join Sangha, hope that one day, meditation will transcend religious practice like yoga and help with improving mental health.</p>
             </section>
+            <img 
+                src="/Pictures/image8.jpg" 
+                alt="Meditation" 
+                style={{ 
+                    marginTop: '1.25rem', 
+                    marginBottom: '1.25rem',
+                    maxWidth: '35rem', 
+                    width: '100%', 
+                    height: 'auto', 
+                    borderRadius: '0.625rem' 
+                }} 
+            />
         </main>
     );
 }
