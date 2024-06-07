@@ -25,6 +25,11 @@ header {
 .logo {
     font-size: 40px;
     font-weight: bold;
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.logo:hover {
+    transform: scale(1.2); /* Scale to 120% */
 }
 
 nav .button {
