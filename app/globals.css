@@ -28,6 +28,17 @@ header {
     transition: transform 0.3s ease; /* Smooth transition */
 }
 
+.logo-link {
+    text-shadow: 
+        -0.1rem -0.1rem 0 #000, 
+        0.1rem -0.1rem 0 #000, 
+        -0.1rem 0.1rem 0 #000, 
+        0.1rem 0.1rem 0 #000; /* Create a thick outline effect */
+    color: white; /* Text color inside the shadow */
+    font-size: 2.0rem; /* Ensure it matches the logo font size */
+    font-weight: bold;
+}
+
 .logo:hover {
     transform: scale(1.2); /* Scale to 120% */
 }

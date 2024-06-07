@@ -182,5 +182,5 @@ export default function ClientCalendar({ children }) {
       )}
       {children}
     </>
-  );
-}
+      );
+    }
