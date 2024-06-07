@@ -38,8 +38,8 @@ export default async function Page() {
             {!user && (
                 <div className="page-two">
                     <div className="text-container">
-                        <h1>It is hard to meditate regularly when we do it alone.</h1>
-                        <p>It is easier when we do it together.</p>
+                        <h1>You are not alone but you still feel lonely?</h1>
+                        <p>Come join our community, find where your soul belongs.</p>
                     </div>
                     <div className="image-container">
                         <img src="/Pictures/image7.jpg" alt="Meditation Image" className="image"/>
