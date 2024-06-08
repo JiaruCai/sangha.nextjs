@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useState } from 'react';
 import styles from './Contact.module.css';
 
@@ -38,7 +38,7 @@ function Contact() {
   return (
     <main className={styles.main}>
       <h1 className={styles.contactHeading}>Contact Us</h1>
-      <form id="contact-form" className={styles.form} method="POST" action="https://script.google.com/macros/s/AKfycby5NH4RAzys77SWCyn_KwUFPD14-4bi9eCsQvF1c6epOef5RUONHhFEFPQvNB_V7y8atw/exec" onSubmit={handleSubmit}>
+      <form id="contact-form" className={styles.form} method="POST" action="https://script.google.com/macros/s/AKfycbxYUYMxHivlqLivrgOc2PTnYbdsoBQqxxLdO1H52_enrNgij8gnhtHmle-3Js6J5k_Aww/exec" onSubmit={handleSubmit}>
         <input name="Email" className={styles.input} type="email" placeholder="Email" required />
         <input name="Name" className={styles.input} type="text" placeholder="Name" required />
         <textarea name="Message" className={styles.textarea} placeholder="Message" required></textarea>
