@@ -14,7 +14,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const user = await currentUser();
-  const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://joinsangha.co' : 'http://localhost:3000';
+  const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://www.joinsangha.co' : 'http://localhost:3000';
 
   return (
     <ClerkProvider>
@@ -26,7 +26,7 @@ export default async function RootLayout({ children }) {
           <meta name="twitter:site" content="@your_twitter_handle" />
           <meta name="twitter:title" content="Join Sangha" />
           <meta name="twitter:description" content="Meditate today on your own schedule!" />
-          <meta name="twitter:image" content="https://joinsangha.co/Pictures/image8.jpg" />
+          <meta name="twitter:image" content="https://www.joinsangha.co/Pictures/image8.jpg" />
         </Head>
         <body className={inter.className}>
           <header>

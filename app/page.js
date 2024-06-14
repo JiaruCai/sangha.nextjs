@@ -4,7 +4,7 @@ import ClientCalendar from './client-calendar';
 
 export default async function Page() {
     const user = await currentUser();
-    const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://joinsangha.co' : 'http://localhost:3000';
+    const redirectUrl = process.env.NODE_ENV === 'production' ? 'https://www.joinsangha.co' : 'http://localhost:3000';
 
     return (
         <>
