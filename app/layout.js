@@ -1,8 +1,8 @@
 import { ClerkProvider, SignInButton, SignOutButton } from '@clerk/nextjs';
-import { Inter } from 'next/font/google'; // Import Inter font
+import { Inter } from 'next/font/google';
 import Link from 'next/link';
-import { currentUser } from '@clerk/nextjs/server'; // Import currentUser function
-import Head from 'next/head'; // Import Head from next/head
+import { currentUser } from '@clerk/nextjs/server';
+import Head from 'next/head';
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -10,6 +10,27 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Join Sangha",
   description: "Meditate today on your own schedule!",
+  openGraph: {
+    title: 'Join Sangha',
+    description: 'Meditate today on your own schedule!',
+    url: 'https://www.joinsangha.co',
+    siteName: 'Join Sangha',
+    images: [
+      {
+        url: 'https://www.joinsangha.co/Pictures/image8.jpg',
+        width: 800,
+        height: 600,
+      },
+      {
+        url: 'https://www.joinsangha.co/Pictures/image8_alt.jpg',
+        width: 1800,
+        height: 1600,
+        alt: 'Sangha meditation session',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
 };
 
 export default async function RootLayout({ children }) {
@@ -22,11 +43,6 @@ export default async function RootLayout({ children }) {
         <Head>
           <title>{metadata.title}</title>
           <meta name="description" content={metadata.description} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:site" content="@your_twitter_handle" />
-          <meta name="twitter:title" content="Join Sangha" />
-          <meta name="twitter:description" content="Meditate today on your own schedule!" />
-          <meta name="twitter:image" content="https://www.joinsangha.co/Pictures/image8.jpg" />
         </Head>
         <body className={inter.className}>
           <header>
