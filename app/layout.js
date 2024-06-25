@@ -42,7 +42,6 @@ export default async function RootLayout({ children }) {
       <html lang="en">
         <Head>
           <title>{metadata.title}</title>
-          <meta name="description" content={metadata.description} />
         </Head>
         <body className={inter.className}>
           <header>
