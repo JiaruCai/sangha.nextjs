@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description: "From your quiet corner to the wider world, explore mindfulness practices that ground you—and connections that uplift you.",
   icons: {
     icon: "/joinsangha-logo.svg",
+    shortcut: "/joinsangha-logo.svg",
+    apple: "/joinsangha-logo.svg",
   },
 };
 

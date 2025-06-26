@@ -488,17 +488,13 @@ const Partnership: React.FC = () => {
                   width={40}
                   height={40}
                   className="h-auto w-900"
-                />              <div className="space-y-4 text-sm sm:text-base">
+                />              
+                <div className="space-y-4 text-sm sm:text-base">
+                <div className="flex items-start -space-x-2"></div>
                 <div className="flex items-start -space-x-2">
                   <div className="w-2 h-2 mt-2 flex-shrink-0"></div>
                   <p className="font-arsenal text-gray-700">
-                    <span className="font-bold">Phone:</span> +1 (555) 365-7834
-                  </p>
-                </div>
-                <div className="flex items-start -space-x-2">
-                  <div className="w-2 h-2 mt-2 flex-shrink-0"></div>
-                  <p className="font-arsenal text-gray-700">
-                    <span className="font-bold">Email:</span> info@joinsangha.co
+                    <span className="font-bold">Email:</span> partnerships@joinsangha.com
                   </p>
                 </div>
                 <div className="flex items-start -space-x-2">
