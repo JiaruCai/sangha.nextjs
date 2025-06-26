@@ -3,6 +3,10 @@
 const nextConfig = {
     reactStrictMode: true,
 
+    images: {
+        domains: ['i.ibb.co', 'images.pexels.com'],
+    },
+
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
         // Modify the webpack config however necessary
         return config;

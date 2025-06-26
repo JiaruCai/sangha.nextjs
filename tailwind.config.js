@@ -1,18 +1,27 @@
-/** @type {import('tailwindcss').Config} */
+// tailwind.config.js
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      keyframes: {
+        orbit: {
+          '0%, 100%': { 'background-position': '50% 50%' },
+          '25%':       { 'background-position': '100% 50%' },
+          '50%':       { 'background-position': '50% 100%' },
+          '75%':       { 'background-position': '0% 50%' },
+        },
+      },
+      animation: {
+        'orbit-slow': 'orbit 5s linear infinite',
       },
     },
   },
-  plugins: [],
-};
+  plugins: [
+    require('@tailwindcss/forms'),
+    // …any other plugins…
+  ],
+}

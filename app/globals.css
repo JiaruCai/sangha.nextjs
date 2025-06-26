@@ -1,312 +1,33 @@
-/* Combined CSS */
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Arsenal:wght@700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Embedded CSS */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: beige; /* Main background color */
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    overflow-y: scroll; /* Enable vertical scrolling */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-header {
-    background-color: #d48d69; /* Header background color */
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    padding: 0.625rem 1.25rem; /* 10px 20px */
-    box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1); /* 4px 6px */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-arsenal: var(--font-arsenal);
+  --font-sub-arsenal: var(--font-arsenal);
 }
 
-.logo {
-    font-size: 2.5rem; /* 40px */
-    font-weight: bold;
-    transition: transform 0.3s ease; /* Smooth transition */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
-.logo-link {
-    text-shadow: 
-        -0.1rem -0.1rem 0 #000, 
-        0.1rem -0.1rem 0 #000, 
-        -0.1rem 0.1rem 0 #000, 
-        0.1rem 0.1rem 0 #000; /* Create a thick outline effect */
-    color: white; /* Text color inside the shadow */
-    font-size: 2.0rem; /* Ensure it matches the logo font size */
-    font-weight: bold;
-}
-
-.logo:hover {
-    transform: scale(1.2); /* Scale to 120% */
-}
-
-nav .button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 1rem; /* 16px */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem; /* 8px 16px */
-    border-radius: 0; /* Initially no border radius */
-}
-
-nav .button:hover {
-    background-color: ivory; /* Color changes to ivory on hover */
-    color: #C9AD39; /* Text color changes to match header background */
-    border-radius: 3.125rem; /* 50px */
-}
-
-.signInButton, .signOutButton {
-    display: inline-block;
-    padding: 0.625rem 1.25rem; /* 10px 20px */
-    margin-top: 0.625rem; /* 10px */
-    background-color: transparent; /* No background */
-    color: #000000; /* Darker color for better visibility */
-    border: 0.2rem solid #ac8b8b; /* 2px */
-    border-radius: 1.25rem; /* 20px */
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.875rem; /* 14px */
-    text-align: center; /* Ensures text is horizontally centered */
-    text-transform: uppercase;
-    font-weight: bold; /* Making the text bold for better readability */
-    vertical-align: middle; /* Helps center text vertically */
-}
-
-.signInButton:hover, .signOutButton:hover {
-    background-color: #ECF0F1; /* Light grey background on hover */
-    color: #000; /* Optionally change text color on hover for contrast */
-    border-color: #ac8b8b; /* Optionally change border color on hover */
-}
-
-.page-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 3.125rem; /* 50px */
-}
-
-.main-page, .page-two {
-    height: 100vh; /* Full screen height */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 80%;
-    max-width: 75rem; /* 1200px */
-    margin: 0 auto;
-    padding: 2.5rem 0; /* 40px 0 */
-}
-
-.text-container {
-    flex: 1;
-    padding-right: 1.25rem; /* 20px */
-}
-
-.image-container {
-    flex-shrink: 0;
-    width: 50%; /* Control the width of image container */
-}
-
-.image {
-    width: 100%;
-    height: auto;
-    max-width: 31.25rem; /* 500px */
-    box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.2); /* Existing shadow */
-    border: 0.3rem solid #333; /* Dark border for cartoon outline */
-    border-radius: 0.5rem; /* Optional: slight rounding of corners */
-}
-
-.image.cartoon-style {
-    box-shadow: 0.3rem 0.3rem 0 rgba(0, 0, 0, 0.3), 0.6rem 0.6rem 0 rgba(0, 0, 0, 0.2), 0.9rem 0.9rem 0 rgba(0, 0, 0, 0.1); /* Multiple sharp shadows */
-    border: 0.4rem solid #000; /* Thicker strong outline */
-    filter: contrast(200%); /* Enhance contrast for a more "drawn" look */
-}
-
-.cartoon-heading {
-    text-shadow: -0.1rem -0.1rem 0 #000, 0.1rem -0.1rem 0 #000, -0.1rem 0.1rem 0 #000, 0.1rem 0.1rem 0 #000; /* Create a thick outline effect */
-    color: rgb(90, 83, 83); /* Text color inside the shadow */
-    font-weight: bold;
-    font-size: 2.8rem; /* Adjust the font size as needed */
-}
-
-h1, .big-text {
-    font-size: 2.25rem; /* 36px */
-}
-
-p, .small-text {
-    font-size: 1rem; /* 16px */
-    margin: 0.3125rem 0; /* 5px 0 */
-}
-
-.bold {
-    font-weight: bold;
-}
-
-.button {
-    background-color: #d48d69;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem; /* 12px 24px */
-    cursor: pointer;
-    font-size: 1.125rem; /* 18px */
-    margin-top: 1.25rem; /* 20px */
-    border-radius: 1.875rem; /* 30px */
-}
-
-.button:hover {
-    transform: scale(1.1);
-}
-
-.small {
-    font-size: 0.75rem; /* 12px */
-    font-weight: 300;
-    opacity: 0.6;
-    margin-top: 0.3125rem; /* 5px */
-}
-
-.image-block {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin: 1.25rem 0; /* 20px 0 */
-}
-
-.image-info {
-    text-align: center;
-    width: 33%;
-    padding: 0.625rem; /* 10px */
-}
-
-.image-info img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 0.625rem; /* 10px */
-}
-
-.image-title {
-    font-size: 1.125rem; /* 18px */
-    font-weight: bold;
-    margin: 0.625rem 0; /* 10px 0 */
-}
-
-.image-info p {
-    font-size: 0.875rem; /* 14px */
-    padding: 0 0.625rem; /* 0 10px */
-}
-
-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 0.625rem 1.25rem; /* 10px 20px */
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footer-left {
-    text-align: left;
-    padding-left: 1.25rem; /* 20px */
-}
-
-.footer-right {
-    text-align: right;
-    padding-right: 1.25rem; /* 20px */
-}
-
-.footer-link {
-    color: white;
-    text-decoration: none;
-    background-color: transparent;
-    padding: 0.5rem 1rem; /* 8px 16px */
-    margin: 0 0.3125rem; /* 0 5px */
-    border-radius: 1.875rem; /* 30px */
-    transition: all 0.3s ease;
-}
-
-.footer-link:hover {
-    background-color: ivory;
-    color: #C9AD39;
-}
-
-@media (max-width: 768px) {
-    .logo {
-        font-size: 1.5rem;  /* Smaller logo size for mobile */
-    }
-
-    header {
-        padding: 0.5rem 1rem;  /* Reduced padding for header on mobile */
-    }
-
-    nav .button {
-        font-size: 0.875rem;  /* Smaller button font size */
-        padding: 0.5rem;  /* Reduced padding for navigation buttons */
-    }
-
-    .main-page, .page-two {
-        display: flex; /* Ensure elements are displayed as flex containers */
-        flex-direction: column;  /* Stack elements vertically */
-        align-items: center;  /* Center align items horizontally */
-        padding: 1rem;  /* Uniform padding */
-    }
-
-    .text-container, .image-container {
-        width: 100%;  /* Full width for both containers */
-        padding-right: 0;  /* Remove right padding */
-        margin-left: 0;  /* Remove left margin */
-        text-align: center;  /* Center align text */
-    }
-
-    .image {
-        width: 90%;  /* 90% width for images */
-        max-width: 100%;  /* Ensure image doesn't exceed container width */
-        height: auto;  /* Maintain aspect ratio */
-        margin-top: 0.625rem;  /* Adjust margin to center the images */
-        margin-bottom: 3rem;  /* Add some space below the image */
-        box-sizing: border-box; /* Ensure padding and border are included in width */
-        display: inline-block; /* Ensures center alignment works */
-        border-radius: 0.625rem; /* 10px */
-    }
-
-    .page-two .image {
-        margin-bottom: 3rem;  /* Add more space below image 2 */
-    }
-
-    .main-page-text, .page-two-text {
-        font-size: 0.4375rem; /* 7px */
-    }
-
-    footer {
-        flex-direction: row;  /* Ensure footer content is in a row */
-        justify-content: space-between; /* Space out content evenly */
-        padding: 0.25rem 0.5rem;  /* Thinner padding for footer on mobile */
-        background-color: #333;  /* Ensure footer background color */
-    }
-
-    .footer-left, .footer-right {
-        text-align: center;  /* Center text alignment for footer */
-        padding: 0.25rem 0;  /* Padding adjustment */
-    }
-
-    .footer-link {
-        padding: 0.25rem 0.5rem;  /* Smaller padding for footer links */
-    }
-
-    .try-for-free-button {
-        padding: 0.5rem 1.5rem; /* Adjust padding for a longer, thinner button */
-        border-radius: 0.25rem; /* Reduce border radius for a less rounded shape */
-    }
-
-    /* Ensure enough space above the footer */
-    .page-container {
-        padding-bottom: 5rem;  /* Add space at the bottom of the page */
-    }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
