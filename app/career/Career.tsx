@@ -97,7 +97,7 @@ const Career: React.FC = () => {
               Join our mission.<br />Build your career with us.
             </h1>
             <p className="font-arsenal text-gray-700 text-base sm:text-lg mt-4 mb-10">
-              We're growing fast and looking for passionate people who want to make an impact. Discover our open roles and start your journey with Familia.
+              We&apos;re growing fast and looking for passionate people who want to make an impact. Discover our open roles and start your journey with Familia.
             </p>
             <a href="#open-roles" className="inline-flex items-center px-6 py-3 bg-[#BF608F] text-white font-arsenal rounded-lg shadow transform transition-transform duration-200 ease-out hover:-translate-y-1">
               View Open Positions
@@ -141,7 +141,7 @@ const Career: React.FC = () => {
           className={`text-center mb-25 transition-all duration-700 ease-out ${perksAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
           <h2 className="font-arsenal font-bold text-black text-2xl sm:text-3xl mb-2">Perks & Benefits</h2>
-          <p className="font-arsenal text-gray-700 text-sm mb-8">We believe people do their best work when they're happy, healthy, and supported. Here's what we offer:</p>
+          <p className="font-arsenal text-gray-700 text-sm mb-8">We believe people do their best work when they&apos;re happy, healthy, and supported. Here&apos;s what we offer:</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
               <div className="mb-4"><Image src="/health.svg" alt="Comprehensive Health" width={30} height={30} /></div>
@@ -211,7 +211,7 @@ const Career: React.FC = () => {
             ))}
           </div>
           <div className="mt-6 text-sm font-arsenal text-gray-700">
-            Don't see a role that fits you? <a href="mailto:info@familiaapp.io" className="text-pink-500 hover:underline">Send us your resume</a>
+            Don&apos;t see a role that fits you? <a href="mailto:info@familiaapp.io" className="text-pink-500 hover:underline">Send us your resume</a>
           </div>
         </div>
 
@@ -221,8 +221,8 @@ const Career: React.FC = () => {
           className={`flex justify-center mb-16 transition-all duration-700 ease-out ${referralAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
           <div className="bg-linear-to-r from-[#EEF2F8] via-[#FFFFFF] to-[#FDF2F8] shadow-lg border border-[#E5E7EB] rounded-xl shadow p-8 max-w-xl w-full text-center">
-            <h3 className="font-arsenal font-bold text-black text-lg mb-2">Know someone who'd be a perfect fit?</h3>
-            <p className="font-arsenal text-gray-700 text-sm mb-4">If you know someone who shares our passion for thoughtful design and mindful living, we'd love for you to send them here – great things happen when good people connect.</p>
+            <h3 className="font-arsenal font-bold text-black text-lg mb-2">Know someone who&apos;d be a perfect fit?</h3>
+            <p className="font-arsenal text-gray-700 text-sm mb-4">If you know someone who shares our passion for thoughtful design and mindful living, we&apos;d love for you to send them here – great things happen when good people connect.</p>
             <a href="mailto:info@familiaapp.io" className="inline-flex items-center px-6 py-3 bg-[#BF608F] text-white font-arsenal rounded-lg shadow transform transition-transform duration-200 ease-out hover:-translate-y-1">Refer Now</a>
           </div>
         </div>

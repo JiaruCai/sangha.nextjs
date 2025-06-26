@@ -20,8 +20,34 @@ function rateLimit(ip: string): boolean {
 // Sanitize function (same as your existing pattern)
 const sanitize = (str: string) => typeof str === 'string' ? str.replace(/[<>]/g, '') : '';
 
+interface OrderData {
+  customerInfo: CustomerInfo;
+  items: CartItem[];
+  amount: number;
+  paymentIntentId: string;
+  transactionDate: string;
+}
+
+interface CustomerInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
+interface CartItem {
+  name: string;
+  price: string;
+  quantity: number;
+}
+
 // Email template function (same as before)
-function generateOrderConfirmationEmail(orderData: any) {
+function generateOrderConfirmationEmail(orderData: OrderData) {
   const { customerInfo, items, amount, paymentIntentId, transactionDate } = orderData;
   
   const parsePrice = (price: string | number) => {
@@ -30,7 +56,7 @@ function generateOrderConfirmationEmail(orderData: any) {
     return match ? parseFloat(match[1]) : 0;
   };
   
-  const itemsHtml = items.map((item: any) => `
+  const itemsHtml = items.map((item: CartItem) => `
     <tr style="border-bottom: 1px solid #eee;">
       <td style="padding: 12px 0; font-family: Arial, sans-serif;">${sanitize(item.name)}</td>
       <td style="padding: 12px 0; text-align: center; font-family: Arial, sans-serif;">${item.quantity}</td>
@@ -184,7 +210,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       formData.append('entry.1041875178', customerInfo.state); // State
       formData.append('entry.1578595877', customerInfo.postalCode); // Postal Code
       formData.append('entry.815910671', customerInfo.country); // Country
-      formData.append('entry.94161965', items.map((item: any) => 
+      formData.append('entry.94161965', items.map((item: CartItem) => 
         `${item.name} (x${item.quantity}) - $${(parsePrice(item.price) * item.quantity).toFixed(2)}`
       ).join('; ')); // Items
       formData.append('entry.103089262', `$${amount.toFixed(2)}`); // Amount
@@ -249,7 +275,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               <p><strong>Total Amount:</strong> $${amount.toFixed(2)}</p>
               <p><strong>Items:</strong></p>
               <ul>
-                ${items.map((item: any) => `<li>${sanitize(item.name)} (x${item.quantity}) - $${(parsePrice(item.price) * item.quantity).toFixed(2)}</li>`).join('')}
+                ${items.map((item: CartItem) => `<li>${sanitize(item.name)} (x${item.quantity}) - $${(parsePrice(item.price) * item.quantity).toFixed(2)}</li>`).join('')}
               </ul>
               <p><strong>Shipping Address:</strong><br>
               ${sanitize(customerInfo.address)}<br>
@@ -264,7 +290,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log('✅ Admin email sent successfully');
         }
 
-      } catch (emailError: any) {
+      } catch (emailError: unknown) {
         console.error('⚠️ Email sending failed:', emailError);
         // Don't fail the whole request if email fails
       }
@@ -281,11 +307,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing order:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     res.status(500).json({ 
       message: 'Failed to process order',
-      error: error.message 
+      error: errorMessage 
     });
   }
 }

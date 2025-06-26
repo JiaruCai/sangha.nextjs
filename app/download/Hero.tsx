@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { useScrollAnimation } from '../useScrollAnimation';
 
 export default function Hero() {
-  const { ref: sectionRef, isVisible: sectionVisible } = useScrollAnimation<HTMLElement>(0.1);
   const { ref: textRef, isVisible: textVisible } = useScrollAnimation<HTMLDivElement>(0.2);
   const { ref: imageRef, isVisible: imageVisible } = useScrollAnimation<HTMLDivElement>(0.2);
 
@@ -51,7 +50,6 @@ export default function Hero() {
       }} />
       
       <section
-        ref={sectionRef}
         className="
           relative
           flex flex-col lg:flex-row

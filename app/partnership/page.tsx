@@ -1,7 +1,6 @@
 import Seo from '../components/Seo'
 import NavBar from '../download/NavBar'
 import Partnership from './Partnership'
-import Footer from '../download/Footer'
 
 export default function PartnershipPage() {
   return (

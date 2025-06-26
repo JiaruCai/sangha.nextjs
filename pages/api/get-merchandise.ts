@@ -31,13 +31,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const csv = await response.text();
     
     const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
-    const products = parsed.data.map((row: any) => ({
-      name: row.name || '',
-      price: row.price || '',
-      description: row.description || '',
-      image: row.image || '',
-      comingSoon: (row.name || '').toLowerCase().includes('coming soon')
-    }));
+    const products = parsed.data.map((row: unknown) => {
+      const productRow = row as Record<string, string>;
+      return {
+        name: productRow.name || '',
+        price: productRow.price || '',
+        description: productRow.description || '',
+        image: productRow.image || '',
+        comingSoon: (productRow.name || '').toLowerCase().includes('coming soon')
+      };
+    });
 
     // Filter out any existing "More coming soon" items from the sheet
     const filteredProducts = products.filter(product => !product.comingSoon);

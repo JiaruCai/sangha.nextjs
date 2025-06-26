@@ -93,7 +93,6 @@ function arrangeMembersForDisplay(members: TeamMember[]): (TeamMember | null)[] 
   }
 
 const TeamBlog: React.FC = () => {
-  const headerAnim = useScrollAnimation();
   const teamAnim = useScrollAnimation();
   const blogAnim = useScrollAnimation();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -111,7 +110,7 @@ const TeamBlog: React.FC = () => {
       {
         id: '1',
         title: 'Let Meditation Change Your Perspective – Stop the Nagging Habit Today',
-        content: 'We\'ve all heard the phrase, "The glass is half full or half empty." The difference lies in perspective...',
+        content: 'We&apos;ve all heard the phrase, &quot;The glass is half full or half empty.&quot; The difference lies in perspective...',
         author: 'Jiaru Cai',
         date: 'May 22, 2024',
         image: '/jiaru-blog.png',
@@ -149,7 +148,7 @@ const TeamBlog: React.FC = () => {
               <input type="text" placeholder="Search this community" className="border border-gray-200 text-black rounded pl-10 pr-3 py-1.5 text-sm w-full focus:outline-none" />
             </form>
           </div>
-          <p className="font-arsenal text-sm sm:text-base text-[#BF608F] max-w-xl mt-3">Stories in the JoinSangha team diary. Latest best practices, news, and trends, directly from the team's writers.</p>
+          <p className="font-arsenal text-sm sm:text-base text-[#BF608F] max-w-xl mt-3">Stories in the JoinSangha team diary. Latest best practices, news, and trends, directly from the team&apos;s writers.</p>
         </div>
       </div>
       {/* Main Content Section */}
@@ -305,7 +304,7 @@ const TeamBlog: React.FC = () => {
           <div className="flex justify-center mt-25">
             <div className="bg-linear-to-r from-[#EEF2F8] via-[#FFFFFF] to-[#FDF2F8] shadow-lg border border-[#E5E7EB] rounded-xl px-8 py-6 max-w-md w-full text-center">
               <div className="font-arsenal font-bold text-black text-lg mb-2">Want to join our team?</div>
-              <div className="font-arsenal text-sm text-gray-700 mb-4">We're always looking for new voices to add to our story.</div>
+              <div className="font-arsenal text-sm text-gray-700 mb-4">We&apos;re always looking for new voices to add to our story.</div>
               <a href="/career" className="inline-block px-6 py-2 bg-[#BF608F] text-white font-arsenal rounded-lg shadow transform transition-transform duration-200 ease-out hover:-translate-y-1 text-base">Check opening roles</a>
             </div>
           </div>

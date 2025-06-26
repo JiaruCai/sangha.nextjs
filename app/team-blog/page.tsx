@@ -1,4 +1,3 @@
-import Footer from '../career/Footer';
 import NavBar from '../download/NavBar';
 import TeamBlog from './TeamBlog';
 import Seo from '../components/Seo';

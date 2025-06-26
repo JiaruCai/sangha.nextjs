@@ -18,6 +18,18 @@ interface CartItem {
   quantity: number;
 }
 
+interface CustomerInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
 function parsePrice(price: string | number) {
   if (typeof price === "number") return price;
   const match = price.match(/\$([\d.]+)/);
@@ -41,9 +53,9 @@ interface CartModalProps {
 // Payment Form Component
 const PaymentForm: React.FC<{
   amount: number;
-  customerInfo: any;
+  customerInfo: CustomerInfo;
   cartItems: CartItem[];
-  onPaymentSuccess: (paymentIntentId: string, amount: number) => void;
+  onPaymentSuccess: (paymentIntentId: string) => void;
   onPaymentError: (error: string) => void;
   onBack: () => void;
 }> = ({ amount, customerInfo, cartItems, onPaymentSuccess, onPaymentError, onBack }) => {
@@ -116,10 +128,11 @@ const PaymentForm: React.FC<{
           }),
         });
 
-        onPaymentSuccess(paymentIntentId, amount);
+        onPaymentSuccess(paymentIntentId);
       }
-    } catch (error: any) {
-      onPaymentError(error.message || 'An error occurred');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      onPaymentError(errorMessage);
     } finally {
       setIsProcessing(false);
     }
@@ -220,7 +233,6 @@ const CartModal: React.FC<CartModalProps> = ({ showCart, cartItems, setCartItems
   const cartModalRef = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(1);
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
-  const [finalOrderAmount, setFinalOrderAmount] = useState<number>(0); // Store final amount
   const [checkoutAmount, setCheckoutAmount] = useState<number>(0); // Store amount when starting checkout
   const [shipping, setShipping] = useState({
     firstName: '',
@@ -267,15 +279,14 @@ const CartModal: React.FC<CartModalProps> = ({ showCart, cartItems, setCartItems
     if (!showCart) {
       setStep(1);
       setPaymentIntentId('');
-      setFinalOrderAmount(0);
       setCheckoutAmount(0);
       // Note: We don't clear cartItems here automatically
       // Cart is only cleared when user explicitly goes back to shop after purchase
     }
   }, [showCart]);
 
-  const handlePaymentSuccess = (paymentId: string, paidAmount: number) => {
-    console.log('Payment successful! Paid amount:', paidAmount);
+  const handlePaymentSuccess = (paymentId: string) => {
+    console.log('Payment successful! Payment ID:', paymentId);
     console.log('Keeping cart items for confirmation screen');
     setPaymentIntentId(paymentId);
     // Don't clear cart here - keep it for confirmation screen calculations
@@ -604,7 +615,6 @@ const CartModal: React.FC<CartModalProps> = ({ showCart, cartItems, setCartItems
                       setShowCart(false);
                       setStep(1);
                       setPaymentIntentId('');
-                      setFinalOrderAmount(0);
                       setCheckoutAmount(0);
                     }}
                   >

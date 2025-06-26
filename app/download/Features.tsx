@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { useScrollAnimation } from '../useScrollAnimation';
 
 const Features: React.FC = () => {
-  const { ref: sectionRef, isVisible: sectionVisible } = useScrollAnimation<HTMLElement>(0.1);
   const { ref: feature1Ref, isVisible: feature1Visible } = useScrollAnimation<HTMLDivElement>(0.2);
   const { ref: feature2Ref, isVisible: feature2Visible } = useScrollAnimation<HTMLDivElement>(0.2);
   const { ref: feature3Ref, isVisible: feature3Visible } = useScrollAnimation<HTMLDivElement>(0.2);
@@ -13,7 +12,6 @@ const Features: React.FC = () => {
   return (
     <>
       <section  
-        ref={sectionRef}
         className="
           relative
           flex flex-col lg:flex-row
@@ -140,7 +138,7 @@ const Features: React.FC = () => {
                 Matching with like-minded peers. 
               </h3>
               <p className="font-arsenal text-black text-sm sm:text-base md:text-lg lg:text-2xl text-gray-600">
-                Whether you're starting your practice or deepening it, meditating alongside a like-minded peer can create a sense of connection and support.
+                Whether you&apos;re starting your practice or deepening it, meditating alongside a like-minded peer can create a sense of connection and support.
               </p>
             </div> 
           </div>

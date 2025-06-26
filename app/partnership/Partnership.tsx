@@ -3,10 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useScrollAnimation } from '../useScrollAnimation';
-import JobPopup from '../career/JobPopup';
 
 const Partnership: React.FC = () => {
-  const { ref: sectionRef, isVisible: sectionVisible } = useScrollAnimation<HTMLElement>(0.1);
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation<HTMLDivElement>(0.2);
   const { ref: missionRef, isVisible: missionVisible } = useScrollAnimation<HTMLDivElement>(0.2);
   const { ref: formRef, isVisible: formVisible } = useScrollAnimation<HTMLDivElement>(0.2);
@@ -421,7 +419,6 @@ const Partnership: React.FC = () => {
 
   return (
     <section
-      ref={sectionRef}
       className="
         relative
         min-h-screen

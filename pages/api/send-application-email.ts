@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         <hr>
         <p><small>Sent from Join Sangha Job Application Form</small></p>
       `,
-      attachments: [] as any[],
+      attachments: [] as { filename: string; content: Buffer }[],
     };
     if (resumeType === 'attach' && resumeFileName && resumeFileData) {
       mailOptions.attachments.push({

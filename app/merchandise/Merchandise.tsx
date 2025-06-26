@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 import CartModal from "./CartModal";
 
 // Product type
@@ -24,19 +23,6 @@ interface CartItem {
   quantity: number;
 }
 
-function parsePrice(price: string | number) {
-  if (typeof price === "number") return price;
-  const match = price.match(/\$([\d.]+)/);
-  const result = match ? parseFloat(match[1]) : 0;
-  
-  // Debug logging - remove after testing
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`parsePrice: "${price}" → ${result}`);
-  }
-  
-  return result;
-}
-
 function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
@@ -52,7 +38,6 @@ export default function Merchandise() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const cartModalRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   // Fetch products from API
   useEffect(() => {

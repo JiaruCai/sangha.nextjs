@@ -3,9 +3,46 @@ import Image from 'next/image';
 
 declare global {
   interface Window {
-    Dropbox?: any;
-    gapi?: any;
-    google?: any;
+    Dropbox?: {
+      choose: (options: {
+        success: (files: unknown[]) => void;
+        linkType: string;
+        multiselect: boolean;
+        extensions: string[];
+      }) => void;
+    };
+    gapi?: {
+      load: (api: string, callback: () => void) => void;
+    };
+    google?: {
+      accounts: {
+        oauth2: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            callback: (response: unknown) => void;
+          }) => {
+            requestAccessToken: () => void;
+          };
+        };
+      };
+      picker: {
+        Action: { PICKED: string };
+        DocsView: new () => {
+          setIncludeFolders: (include: boolean) => unknown;
+          setSelectFolderEnabled: (enabled: boolean) => unknown;
+          setMimeTypes: (types: string) => unknown;
+        };
+        PickerBuilder: new () => {
+          setAppId: (id: string) => unknown;
+          setOAuthToken: (token: string) => unknown;
+          setDeveloperKey: (key: string) => unknown;
+          addView: (view: unknown) => unknown;
+          setCallback: (callback: (data: unknown) => void) => unknown;
+          build: () => { setVisible: (visible: boolean) => void };
+        };
+      };
+    };
   }
 }
 
@@ -76,8 +113,6 @@ const GOOGLE_CLIENT_ID = '647527313249-d18gkeqi55ncdei8hccoteo9s0v6egpo.apps.goo
 const GOOGLE_API_KEY = 'AIzaSyDFns9XmNKIXcYZVgqsJ5vlMZ2ifRSl_r4'; // <-- Replace with your Google API Key
 
 const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
-  if (!open || !job) return null;
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -128,7 +163,7 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
         pickerScript.src = 'https://apis.google.com/js/api.js';
         pickerScript.async = true;
         pickerScript.onload = () => {
-          window.gapi.load('picker', () => {
+          window.gapi?.load('picker', () => {
             setIsGoogleAPILoaded(true);
           });
         };
@@ -144,16 +179,18 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
     }
   }, []);
 
-  // Dropbox Chooser handler
+  // Dropbox Chooser handler (currently unused)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDropboxChooser = () => {
     if (window.Dropbox) {
       window.Dropbox.choose({
-        success: (files: any[]) => {
+        success: (files: unknown[]) => {
           if (files && files.length > 0) {
+            const file = files[0] as { link: string; name: string };
             setFormData(prev => ({
               ...prev,
-              resume: files[0].link,
-              resumeFileName: files[0].name,
+              resume: file.link,
+              resumeFileName: file.name,
               resumeType: 'dropbox',
               resumeFileData: '',
             }));
@@ -174,28 +211,34 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
     }
 
     try {
-      const tokenClient = window.google.accounts.oauth2.initTokenClient({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const googleAuth = window.google?.accounts as any;
+      const tokenClient = googleAuth?.oauth2.initTokenClient({
         client_id: GOOGLE_CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly',
-        callback: (tokenResponse: any) => {
-          if (tokenResponse && tokenResponse.access_token) {
+        callback: (tokenResponse: unknown) => {
+          const response = tokenResponse as { access_token: string };
+          if (tokenResponse && response.access_token && window.google) {
             // Create and show the picker
-            const view = new window.google.picker.DocsView()
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const googleAPI = window.google as any;
+            const view = new googleAPI.picker.DocsView()
               .setIncludeFolders(false)
               .setSelectFolderEnabled(false)
               .setMimeTypes('application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/rtf');
 
-            const picker = new window.google.picker.PickerBuilder()
+            const picker = new googleAPI.picker.PickerBuilder()
               .setAppId(GOOGLE_CLIENT_ID)
-              .setOAuthToken(tokenResponse.access_token)
+              .setOAuthToken(response.access_token)
               .setDeveloperKey(GOOGLE_API_KEY)
               .addView(view)
-              .setCallback((data: any) => {
-                if (data.action === window.google.picker.Action.PICKED && data.docs && data.docs.length > 0) {
+              .setCallback((data: unknown) => {
+                const pickerData = data as { action: string; docs: { url: string; name: string }[] };
+                if (pickerData.action === googleAPI.picker.Action.PICKED && pickerData.docs && pickerData.docs.length > 0) {
                   setFormData(prev => ({
                     ...prev,
-                    resume: data.docs[0].url,
-                    resumeFileName: data.docs[0].name,
+                    resume: pickerData.docs[0].url,
+                    resumeFileName: pickerData.docs[0].name,
                     resumeType: 'gdrive',
                     resumeFileData: '',
                   }));
@@ -209,9 +252,9 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
       });
 
       // Request access token
-      tokenClient.requestAccessToken();
-    } catch (error) {
-      console.error('Error initializing Google Drive Picker:', error);
+      tokenClient?.requestAccessToken();
+    } catch {
+      console.error('Error initializing Google Drive Picker');
       setSubmitStatus('error');
     }
   };
@@ -301,7 +344,7 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
       } else {
         setSubmitStatus('error');
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -319,6 +362,8 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
       {!isGoogleAPILoaded ? 'Loading...' : 'Google Drive'}
     </button>
   );
+
+  if (!open || !job) return null;
 
   return (
     <div className="fixed inset-0 z-50 bg-white overflow-y-auto min-h-screen flex flex-col">
@@ -348,7 +393,7 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
         </div>
         {/* What You'll Do */}
         <div className="mb-8">
-          <h2 className="font-bold text-black text-lg font-arsenal mb-2 text-left">What You'll Do:</h2>
+          <h2 className="font-bold text-black text-lg font-arsenal mb-2 text-left">What You&apos;ll Do:</h2>
           <ul className="list-disc list-inside ml-8 text-gray-700 font-arsenal text-base space-y-1 text-left">
             {job.responsibilities.map((item, idx) => (
               <li key={idx}>{item}</li>
@@ -357,7 +402,7 @@ const JobPopup: React.FC<JobPopupProps> = ({ open, onClose, job }) => {
         </div>
         {/* What We're Looking For */}
         <div className="mb-8">
-          <h2 className="font-bold text-black text-lg font-arsenal mb-2 text-left">What We're Looking For:</h2>
+          <h2 className="font-bold text-black text-lg font-arsenal mb-2 text-left">What We&apos;re Looking For:</h2>
           <ul className="list-disc list-inside ml-8 text-gray-700 font-arsenal text-base space-y-1 text-left">
             {job.lookingFor?.map((item, idx) => (
               <li key={idx}>{item}</li>
