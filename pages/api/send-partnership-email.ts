@@ -108,20 +108,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Validate environment variables
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
+    const emailTo = process.env.EMAIL_TO;
+    
+    if (!emailUser || !emailPass || !emailTo) {
+      console.error('Missing email environment variables:', {
+        EMAIL_USER: !!emailUser,
+        EMAIL_PASS: !!emailPass,
+        EMAIL_TO: !!emailTo
+      });
+      return res.status(500).json({ message: 'Email service not configured properly' });
+    }
+
     // These environment variables are only accessible on the server
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
       auth: {
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS,
+        user: emailUser,
+        pass: emailPass,
       },
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO,
+      from: emailUser,
+      to: emailTo,
       subject: `New Partnership Inquiry from ${sanitize(name)}`,
       html: `
         <h2>New Partnership Inquiry</h2>
