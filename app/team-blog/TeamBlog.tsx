@@ -98,6 +98,7 @@ const TeamBlog: React.FC = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [blogStats, setBlogStats] = useState<Record<string, {views: number, likes: number}>>({});
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [activeTab, setActiveTab] = useState('new-issues');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
@@ -107,10 +108,17 @@ const TeamBlog: React.FC = () => {
       .then(csv => setTeamMembers(parseCSV(csv)));
     
     // Fetch blog stats
+    setIsLoadingStats(true);
     fetch('/api/get-blog-stats')
       .then(res => res.json())
-      .then(stats => setBlogStats(stats))
-      .catch(err => console.warn('Could not load blog stats:', err));
+      .then(stats => {
+        setBlogStats(stats);
+        setIsLoadingStats(false);
+      })
+      .catch(err => {
+        console.warn('Could not load blog stats:', err);
+        setIsLoadingStats(false);
+      });
     
     // Initialize with sample blog posts - you can replace this with actual data
     setBlogPosts([
@@ -135,10 +143,17 @@ const TeamBlog: React.FC = () => {
   const handleBack = () => {
     setSelectedPost(null);
     // Refresh stats when returning from individual post
+    setIsLoadingStats(true);
     fetch('/api/get-blog-stats')
       .then(res => res.json())
-      .then(stats => setBlogStats(stats))
-      .catch(err => console.warn('Could not refresh blog stats:', err));
+      .then(stats => {
+        setBlogStats(stats);
+        setIsLoadingStats(false);
+      })
+      .catch(err => {
+        console.warn('Could not refresh blog stats:', err);
+        setIsLoadingStats(false);
+      });
   };
 
   if (selectedPost) {
@@ -246,13 +261,21 @@ const TeamBlog: React.FC = () => {
                               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2"/>
                               <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                             </svg>
-                            <span>{blogStats[post.id]?.views || post.views}</span>
+                            {isLoadingStats ? (
+                              <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
+                            ) : (
+                              <span>{blogStats[post.id]?.views || post.views}</span>
+                            )}
                           </div>
                           <div className="flex items-center gap-1">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
                               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="2"/>
                             </svg>
-                            <span>{blogStats[post.id]?.likes || post.likes}</span>
+                            {isLoadingStats ? (
+                              <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
+                            ) : (
+                              <span>{blogStats[post.id]?.likes || post.likes}</span>
+                            )}
                           </div>
                           <div className="flex items-center gap-1">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
