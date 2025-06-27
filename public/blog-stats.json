@@ -2,5 +2,9 @@
   "1": {
     "views": 3,
     "likes": 0
+  },
+  "test-post": {
+    "views": 0.5,
+    "likes": 1
   }
 }

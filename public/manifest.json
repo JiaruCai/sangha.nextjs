@@ -1,0 +1,16 @@
+{
+  "name": "JoinSangha",
+  "short_name": "JoinSangha",
+  "description": "Meditate Anywhere, Connect Everywhere",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/joinsangha-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { updateBlogStats, initializeDatabase } from '../../lib/db';
 
 const rateLimit = new Map();
 
@@ -36,37 +37,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Post ID is required' });
     }
 
-    // For now, we'll use a simple file-based approach
-    // In production, you might want to use Google Sheets or a database
-    const fs = await import('fs');
-    const path = await import('path');
+    await initializeDatabase();
     
-    const statsFile = path.join(process.cwd(), 'public', 'blog-stats.json');
-    
-    let stats: Record<string, {views: number, likes: number}> = {};
-    try {
-      if (fs.existsSync(statsFile)) {
-        stats = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
-      }
-    } catch {
-      console.warn('Could not read stats file, starting fresh');
-    }
-
-    // Initialize post stats if not exists
-    if (!stats[postId]) {
-      stats[postId] = { views: 0, likes: 0 };
-    }
-
-    // Increment view count
-    stats[postId].views += 0.5;
-
-    // Write back to file
-    fs.writeFileSync(statsFile, JSON.stringify(stats, null, 2));
+    const stats = await updateBlogStats(postId, 'view', 0.5);
 
     return res.status(200).json({ 
       success: true, 
-      views: stats[postId].views,
-      likes: stats[postId].likes 
+      views: stats.views,
+      likes: stats.likes 
     });
 
   } catch (err) {
