@@ -21,9 +21,67 @@ type BlogPostData = {
 interface BlogPostProps {
   post: BlogPostData;
   onBack?: () => void;
+  blogStats?: Record<string, {views: number, likes: number}>;
 }
 
-const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
+const BlogPost: React.FC<BlogPostProps> = ({ post, onBack, blogStats }) => {
+  const [currentStats, setCurrentStats] = React.useState({
+    views: blogStats?.[post.id]?.views || post.views,
+    likes: blogStats?.[post.id]?.likes || post.likes,
+    isLiked: false
+  });
+
+  // Track view when component mounts
+  React.useEffect(() => {
+    const trackView = async () => {
+      try {
+        const response = await fetch('/api/track-blog-view', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ postId: post.id }),
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentStats(prev => ({
+            ...prev,
+            views: data.views,
+            likes: data.likes
+          }));
+        }
+      } catch (error) {
+        console.warn('Could not track view:', error);
+      }
+    };
+    
+    trackView();
+  }, [post.id]);
+
+  const handleLike = async () => {
+    try {
+      const action = currentStats.isLiked ? 'unlike' : 'like';
+      const response = await fetch('/api/track-blog-like', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ postId: post.id, action }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentStats(prev => ({
+          ...prev,
+          likes: data.likes,
+          isLiked: !prev.isLiked
+        }));
+      }
+    } catch (error) {
+      console.warn('Could not update like:', error);
+    }
+  };
   return (
     <main className="relative min-h-screen bg-white flex flex-col overflow-x-hidden">
       <NavBar />
@@ -62,8 +120,28 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack }) => {
               <span className="font-arsenal">{post.date}</span>
             </div>
             <div className="flex items-center space-x-4 text-sm text-gray-500">
-              <span className="font-arsenal">{post.views} views</span>
-              <span className="font-arsenal">{post.likes} likes</span>
+              <span className="font-arsenal">{currentStats.views} views</span>
+              <button 
+                onClick={handleLike}
+                className={`font-arsenal flex items-center gap-1 transition-colors ${
+                  currentStats.isLiked ? 'text-[#BF608F]' : 'text-gray-500 hover:text-[#BF608F]'
+                }`}
+              >
+                <svg 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill={currentStats.isLiked ? 'currentColor' : 'none'} 
+                  className="transition-colors"
+                >
+                  <path 
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                  />
+                </svg>
+                {currentStats.likes}
+              </button>
               <span className="font-arsenal">{post.comments} comments</span>
             </div>
           </div>
