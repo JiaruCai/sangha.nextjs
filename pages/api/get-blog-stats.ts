@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       code: (err as DbError)?.code,
       stack: err instanceof Error ? err.stack : undefined,
       env: {
-        DATABASE_URL: !!process.env.DATABASE_URL,
+        POSTGRES_URL: !!process.env.POSTGRES_URL,
         NODE_ENV: process.env.NODE_ENV
       }
     });

@@ -8,12 +8,12 @@ let pool: Pool | null = null;
 
 export function getDb(): Pool {
   if (!pool) {
-    if (!process.env.DATABASE_URL) {
-      throw new Error('DATABASE_URL environment variable is not set');
+    if (!process.env.POSTGRES_URL) {
+      throw new Error('POSTGRES_URL environment variable is not set');
     }
     
     pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.POSTGRES_URL,
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
       max: 10,
       idleTimeoutMillis: 30000,
@@ -26,7 +26,7 @@ export function getDb(): Pool {
 export async function initializeDatabase(): Promise<void> {
   try {
     console.log('Initializing database...');
-    console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+    console.log('POSTGRES_URL exists:', !!process.env.POSTGRES_URL);
     console.log('NODE_ENV:', process.env.NODE_ENV);
     
     const db = getDb();
