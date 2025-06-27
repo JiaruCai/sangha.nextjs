@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { updateBlogStats, initializeDatabase } from '../../lib/db';
 
+interface DbError extends Error {
+  code?: string;
+}
+
 const rateLimit = new Map();
 
 function rateLimitCheck(ip: string, maxRequests = 20, windowMs = 60000): boolean {
@@ -54,6 +58,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   } catch (err) {
     console.error('Error tracking blog like:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('Error details:', {
+      message: err instanceof Error ? err.message : 'Unknown error',
+      code: (err as DbError)?.code,
+      stack: err instanceof Error ? err.stack : undefined,
+      env: {
+        DATABASE_URL: !!process.env.DATABASE_URL,
+        NODE_ENV: process.env.NODE_ENV
+      }
+    });
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? (err instanceof Error ? err.message : 'Unknown error') : undefined
+    });
   }
 }

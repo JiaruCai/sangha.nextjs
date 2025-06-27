@@ -1,21 +1,36 @@
 import { Pool } from 'pg';
 
+interface DbError extends Error {
+  code?: string;
+}
+
 let pool: Pool | null = null;
 
 export function getDb(): Pool {
   if (!pool) {
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      max: 10,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
     });
   }
   return pool;
 }
 
 export async function initializeDatabase(): Promise<void> {
-  const db = getDb();
-  
   try {
+    console.log('Initializing database...');
+    console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    
+    const db = getDb();
+    
     await db.query(`
       CREATE TABLE IF NOT EXISTS blog_stats (
         id SERIAL PRIMARY KEY,
@@ -32,6 +47,11 @@ export async function initializeDatabase(): Promise<void> {
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      code: (error as DbError)?.code,
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
