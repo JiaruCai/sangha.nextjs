@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await initializeDatabase();
     
-    const stats = await updateBlogStats(postId, 'view', 0.5);
+    const stats = await updateBlogStats(postId, 'view', 1);
 
     return res.status(200).json({ 
       success: true, 
