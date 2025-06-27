@@ -1,16 +1,18 @@
-import Seo from '../components/Seo'
+import { generateSeoMetadata } from '../components/Seo'
 import NavBar from '../download/NavBar'
 import Merchandise from './Merchandise'
 
-export default function PartnershipPage() {
-  return (
-    <>
-      <Seo title="Partnership – JoinSangha" description="Check out our merchandise at JoinSangha. A collection of products to help you spread mindfulness and build meaningful connections!" />
+export const metadata = generateSeoMetadata({
+  title: "Merchandise – JoinSangha",
+  description: "Check out our merchandise at JoinSangha. A collection of products to help you spread mindfulness and build meaningful connections!",
+  url: "https://joinsangha.com/merchandise"
+})
 
-      <main className="flex flex-col min-h-screen">
-        <NavBar />
-        <Merchandise />
-      </main>
-    </>
+export default function MerchandisePage() {
+  return (
+    <main className="flex flex-col min-h-screen">
+      <NavBar />
+      <Merchandise />
+    </main>
   )
 }
