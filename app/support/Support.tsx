@@ -117,7 +117,7 @@ const Support: React.FC = () => {
             <p className="font-arsenal text-gray-600 text-sm mb-4">Get help via email</p>
             <div className="space-y-2">
               <p className="font-arsenal text-black font-medium">support@joinsangha.com</p>
-              <div className="flex items-center justify-center text-gray-500 text-sm">
+              <div className="bg-pink-100 rounded-md p-1 w-1/2 mx-auto flex items-center justify-center text-gray-500 text-sm">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -137,7 +137,7 @@ const Support: React.FC = () => {
             <p className="font-arsenal text-gray-600 text-sm mb-4">Talk to our support team</p>
             <div className="space-y-2">
               <p className="font-arsenal text-black font-medium">+1 510 501 3934</p>
-              <div className="flex items-center justify-center text-gray-500 text-sm">
+              <div className="bg-pink-100 rounded-md p-1 w-1/2 mx-auto flex items-center justify-center text-gray-500 text-sm">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
