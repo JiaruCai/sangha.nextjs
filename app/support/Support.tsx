@@ -88,7 +88,7 @@ const Support: React.FC = () => {
             How can we help you?
           </h1>
           <p className="font-arsenal text-gray-700 text-lg sm:text-xl max-w-2xl mx-auto">
-            We're here to help you get the most out of our platform. Find answers, get support, 
+            We&apos;re here to help you get the most out of our platform. Find answers, get support, 
             and connect with our team.
           </p>
         </div>
@@ -165,7 +165,7 @@ const Support: React.FC = () => {
               Submit a Support Ticket
             </h2>
             <p className="font-arsenal text-gray-600 text-base mb-8">
-              Describe your issue and we'll get back to you as soon as possible.
+              Describe your issue and we&apos;ll get back to you as soon as possible.
             </p>
             
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -280,7 +280,7 @@ const Support: React.FC = () => {
               {submitStatus === 'success' && (
                 <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
                   <div className="font-arsenal">
-                    Thank you! Your support ticket has been submitted successfully. We'll get back to you within 24 hours.
+                    Thank you! Your support ticket has been submitted successfully. We&apos;ll get back to you within 24 hours.
                   </div>
                 </div>
               )}
