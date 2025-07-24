@@ -96,6 +96,9 @@ export default function Hero() {
                 width={120}
                 height={40}
                 className="w-auto h-full"
+                onClick={() => {
+                  window.open('https://testflight.apple.com/join/ASzE4d4A', '_blank');
+                }}
               />
             </a>
             <a
@@ -111,7 +114,10 @@ export default function Hero() {
                 alt="Google Play"
                 width={135}
                 height={40}
-                className="w-auto h-full"
+                className="w-auto h-full" 
+                onClick={() => {
+                  alert('Coming soon to Google Play!');
+                }}
               />
             </a>
           </div>
