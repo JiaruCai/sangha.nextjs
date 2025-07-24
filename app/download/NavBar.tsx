@@ -15,6 +15,7 @@ const NavBar: React.FC = () => {
 
   const navigationLinks = [
     { href: '/download', label: 'Download' },
+    { href: '/support', label: 'Support' },
     { href: '/partnership', label: 'Partnership' },
     { href: '/team-blog', label: 'Team Blog' },
     { href: '/merchandise', label: 'Merchandise' },
