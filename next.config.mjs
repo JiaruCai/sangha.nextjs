@@ -4,7 +4,7 @@ const nextConfig = {
     reactStrictMode: true,
 
     images: {
-        domains: ['i.ibb.co', 'images.pexels.com'],
+        domains: ['i.ibb.co', 'images.pexels.com', 'ibb.co'],
     },
 
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {

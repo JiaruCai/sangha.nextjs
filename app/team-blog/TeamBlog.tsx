@@ -18,14 +18,18 @@ type BlogPost = {
   id: string;
   title: string;
   content: string;
+  contentPost: string;
   author: string;
   authorImage: string;
   date: string;
   image: string;
+  image2: string;
+  image3: string;
   views: number;
   likes: number;
   comments: number;
   category: string;
+  published?: boolean;
 };
 
 function parseCSV(csv: string): TeamMember[] {
@@ -99,13 +103,28 @@ const TeamBlog: React.FC = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [blogStats, setBlogStats] = useState<Record<string, {views: number, likes: number}>>({});
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
   const [activeTab, setActiveTab] = useState('new-issues');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
+    // Fetch team members
     fetch(GOOGLE_SHEET_CSV_URL)
       .then(res => res.text())
       .then(csv => setTeamMembers(parseCSV(csv)));
+    
+    // Fetch blog posts
+    setIsLoadingPosts(true);
+    fetch('/api/get-blog-posts')
+      .then(res => res.json())
+      .then(posts => {
+        setBlogPosts(posts);
+        setIsLoadingPosts(false);
+      })
+      .catch(err => {
+        console.warn('Could not load blog posts:', err);
+        setIsLoadingPosts(false);
+      });
     
     // Fetch blog stats
     setIsLoadingStats(true);
@@ -119,23 +138,6 @@ const TeamBlog: React.FC = () => {
         console.warn('Could not load blog stats:', err);
         setIsLoadingStats(false);
       });
-    
-    // Initialize with sample blog posts - you can replace this with actual data
-    setBlogPosts([
-      {
-        id: '1',
-        title: 'Let Meditation Change Your Perspective – Stop the Nagging Habit Today',
-        content: 'We&apos;ve all heard the phrase, &quot;The glass is half full or half empty.&quot; The difference lies in perspective...',
-        author: 'Jiaru Cai',
-        date: 'May 22, 2024',
-        image: '/jiaru-blog.png',
-        authorImage: '/jiaru-cai.png',
-        views: 0,
-        likes: 0,
-        comments: 0,
-        category: 'JoinSangha Teams Blog'
-      },
-    ]);
   }, []);
 
   const arrangedMembers = arrangeMembersForDisplay(teamMembers);
@@ -207,100 +209,225 @@ const TeamBlog: React.FC = () => {
             {/* Blog Posts Content */}
             {activeTab === 'new-issues' && (
               <div className="space-y-6">
-                {blogPosts.map((post) => (
-                  <article 
-                    key={post.id} 
-                    className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => setSelectedPost(post)}
-                  >
-                    <div className="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
-                      <Image 
-                        src={post.authorImage || '/default-avatar.png'} 
-                        alt={post.author} 
-                        width={64} 
-                        height={64} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-arsenal font-bold text-lg sm:text-xl text-gray-900 mb-2">{post.title}</h3>
-                      <p className="font-arsenal text-gray-600 text-sm mb-4 line-clamp-2">{post.content}</p>
-                      
-                      {/* Thumbnail Image */}
-                      <div className="mb-4 rounded-lg overflow-hidden ">
-                        <Image 
-                          src={post.image} 
-                          alt={post.title} 
-                          width={315} 
-                          height={200} 
-                          className=" object-cover"
-                        />
-                      </div>
-                      
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-gray-500 gap-2 sm:gap-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span>{post.author}</span>
-                          <span>•</span>
-                          <span>{post.date}</span>
-                          <span>•</span>
-                          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_323_3007)">
-                            <path d="M6.30959 0.5V5C6.30989 5.04099 6.32193 5.08104 6.34429 5.1154C6.36664 5.14976 6.39837 5.17699 6.43572 5.19388C6.47307 5.21076 6.51448 5.21659 6.55504 5.21068C6.5956 5.20476 6.63362 5.18735 6.66459 5.1605L6.69159 5.133L8.10859 3.988L9.44009 5.133C9.46587 5.16492 9.50025 5.1888 9.53916 5.20182C9.57808 5.21483 9.6199 5.21644 9.6597 5.20645C9.6995 5.19646 9.73561 5.1753 9.76376 5.14545C9.79192 5.1156 9.81094 5.07831 9.81859 5.038L9.82159 5V0.5H10.3086C10.5609 0.49992 10.8039 0.595203 10.9889 0.766749C11.1739 0.938294 11.2872 1.17342 11.3061 1.425L11.3086 1.5V11C11.3087 11.2523 11.2134 11.4953 11.0418 11.6803C10.8703 11.8653 10.6352 11.9786 10.3836 11.9975L10.3086 12H2.83559V0.5H6.30959ZM2.32359 0.5V12H1.80859C1.67599 12 1.54881 11.9473 1.45504 11.8536C1.36127 11.7598 1.30859 11.6326 1.30859 11.5V1C1.30859 0.867392 1.36127 0.740215 1.45504 0.646447C1.54881 0.552678 1.67599 0.5 1.80859 0.5H2.32359ZM9.29709 0.5V4.1885L8.24709 3.3215C8.229 3.29901 8.20657 3.2804 8.18114 3.26676C8.1557 3.25313 8.12778 3.24476 8.09904 3.24214C8.07029 3.23953 8.04132 3.24273 8.01384 3.25156C7.98636 3.26038 7.96094 3.27464 7.93909 3.2935L7.91209 3.3215L6.80859 4.1885V0.5H9.29709Z" fill="#BF608F"/>
-                            </g>
-                            <defs>
-                            <clipPath id="clip0_323_3007">
-                            <rect width="12" height="12" fill="white" transform="translate(0.308594 0.5)"/>
-                            </clipPath>
-                            </defs>
-                          </svg>
-                          <span className="text-[#BF608F]">{post.category}</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2"/>
-                              <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
-                            </svg>
-                            {isLoadingStats ? (
-                              <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
-                            ) : (
-                              <span>{blogStats[post.id]?.views || post.views}</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-                              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="2"/>
-                            </svg>
-                            {isLoadingStats ? (
-                              <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
-                            ) : (
-                              <span>{blogStats[post.id]?.likes || post.likes}</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-                              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="2"/>
-                            </svg>
-                            <span>{post.comments}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-                
-                {blogPosts.length === 0 && (
+                {isLoadingPosts ? (
                   <div className="text-center py-12">
-                    <p className="font-arsenal text-gray-500">No blog posts yet. Check back soon!</p>
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#BF608F]"></div>
+                    <p className="font-arsenal text-gray-500 mt-4">Loading blog posts...</p>
                   </div>
+                ) : (
+                  <>
+                    {blogPosts.map((post) => (
+                      <article 
+                        key={post.id} 
+                        className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => setSelectedPost(post)}
+                      >
+                        <div className="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+                          {post.authorImage ? (
+                            <Image 
+                              src={post.authorImage} 
+                              alt={post.author} 
+                              width={64} 
+                              height={64} 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-[#BF608F] flex items-center justify-center">
+                              <span className="text-white font-bold text-lg">
+                                {post.author.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-arsenal font-bold text-lg sm:text-xl text-gray-900 mb-2">{post.title}</h3>
+                          <p className="font-arsenal text-gray-600 text-sm mb-4 line-clamp-2">{post.content}</p>
+                          
+                          {/* Thumbnail Image */}
+                          {post.image && (
+                            <div className="mb-4 overflow-hidden ">
+                              <Image 
+                                src={post.image} 
+                                alt={post.title} 
+                                width={315} 
+                                height={210} 
+                                className=" object-cover"
+                              />
+                            </div>
+                          )}
+                          
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-gray-500 gap-2 sm:gap-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span>{post.author}</span>
+                              <span>•</span>
+                              <span>{post.date}</span>
+                              <span>•</span>
+                              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g clipPath="url(#clip0_323_3007)">
+                                <path d="M6.30959 0.5V5C6.30989 5.04099 6.32193 5.08104 6.34429 5.1154C6.36664 5.14976 6.39837 5.17699 6.43572 5.19388C6.47307 5.21076 6.51448 5.21659 6.55504 5.21068C6.5956 5.20476 6.63362 5.18735 6.66459 5.1605L6.69159 5.133L8.10859 3.988L9.44009 5.133C9.46587 5.16492 9.50025 5.1888 9.53916 5.20182C9.57808 5.21483 9.6199 5.21644 9.6597 5.20645C9.6995 5.19646 9.73561 5.1753 9.76376 5.14545C9.79192 5.1156 9.81094 5.07831 9.81859 5.038L9.82159 5V0.5H10.3086C10.5609 0.49992 10.8039 0.595203 10.9889 0.766749C11.1739 0.938294 11.2872 1.17342 11.3061 1.425L11.3086 1.5V11C11.3087 11.2523 11.2134 11.4953 11.0418 11.6803C10.8703 11.8653 10.6352 11.9786 10.3836 11.9975L10.3086 12H2.83559V0.5H6.30959ZM2.32359 0.5V12H1.80859C1.67599 12 1.54881 11.9473 1.45504 11.8536C1.36127 11.7598 1.30859 11.6326 1.30859 11.5V1C1.30859 0.867392 1.36127 0.740215 1.45504 0.646447C1.54881 0.552678 1.67599 0.5 1.80859 0.5H2.32359ZM9.29709 0.5V4.1885L8.24709 3.3215C8.229 3.29901 8.20657 3.2804 8.18114 3.26676C8.1557 3.25313 8.12778 3.24476 8.09904 3.24214C8.07029 3.23953 8.04132 3.24273 8.01384 3.25156C7.98636 3.26038 7.96094 3.27464 7.93909 3.2935L7.91209 3.3215L6.80859 4.1885V0.5H9.29709Z" fill="#BF608F"/>
+                                </g>
+                                <defs>
+                                <clipPath id="clip0_323_3007">
+                                <rect width="12" height="12" fill="white" transform="translate(0.308594 0.5)"/>
+                                </clipPath>
+                                </defs>
+                              </svg>
+                              <span className="text-[#BF608F]">{post.category}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2"/>
+                                  <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                                {isLoadingStats ? (
+                                  <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
+                                ) : (
+                                  <span>{blogStats[post.id]?.views || post.views || 0}</span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                                {isLoadingStats ? (
+                                  <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
+                                ) : (
+                                  <span>{blogStats[post.id]?.likes || post.likes || 0}</span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                                <span>{post.comments || 0}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                    
+                    {blogPosts.length === 0 && (
+                      <div className="text-center py-12">
+                        <p className="font-arsenal text-gray-500">No blog posts yet. Check back soon!</p>
+                      </div>
+                    )}
+                  </>
                 )}
-                
               </div>
             )}
             
             {activeTab === 'most-viewed' && (
-              <div className="text-center py-12">
-                <p className="font-arsenal text-gray-500">Most viewed posts coming soon!</p>
+              <div className="space-y-6">
+                {isLoadingPosts ? (
+                  <div className="text-center py-12">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#BF608F]"></div>
+                    <p className="font-arsenal text-gray-500 mt-4">Loading blog posts...</p>
+                  </div>
+                ) : (
+                  <>
+                    {[...blogPosts]
+                      .sort((a, b) => (blogStats[b.id]?.views || b.views || 0) - (blogStats[a.id]?.views || a.views || 0))
+                      .map((post) => (
+                        <article 
+                          key={post.id} 
+                          className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => setSelectedPost(post)}
+                        >
+                          <div className="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+                            {post.authorImage ? (
+                              <Image 
+                                src={post.authorImage} 
+                                alt={post.author} 
+                                width={64} 
+                                height={64} 
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-[#BF608F] flex items-center justify-center">
+                                <span className="text-white font-bold text-lg">
+                                  {post.author.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-arsenal font-bold text-lg sm:text-xl text-gray-900 mb-2">{post.title}</h3>
+                            <p className="font-arsenal text-gray-600 text-sm mb-4 line-clamp-2">{post.content}</p>
+                            
+                            {/* Thumbnail Image */}
+                            {post.image && (
+                              <div className="mb-4 overflow-hidden ">
+                                <Image 
+                                  src={post.image} 
+                                  alt={post.title} 
+                                  width={315} 
+                                  height={200} 
+                                  className=" object-cover"
+                                />
+                              </div>
+                            )}
+                            
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-gray-500 gap-2 sm:gap-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span>{post.author}</span>
+                                <span>•</span>
+                                <span>{post.date}</span>
+                                <span>•</span>
+                                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <g clipPath="url(#clip0_323_3007)">
+                                  <path d="M6.30959 0.5V5C6.30989 5.04099 6.32193 5.08104 6.34429 5.1154C6.36664 5.14976 6.39837 5.17699 6.43572 5.19388C6.47307 5.21076 6.51448 5.21659 6.55504 5.21068C6.5956 5.20476 6.63362 5.18735 6.66459 5.1605L6.69159 5.133L8.10859 3.988L9.44009 5.133C9.46587 5.16492 9.50025 5.1888 9.53916 5.20182C9.57808 5.21483 9.6199 5.21644 9.6597 5.20645C9.6995 5.19646 9.73561 5.1753 9.76376 5.14545C9.79192 5.1156 9.81094 5.07831 9.81859 5.038L9.82159 5V0.5H10.3086C10.5609 0.49992 10.8039 0.595203 10.9889 0.766749C11.1739 0.938294 11.2872 1.17342 11.3061 1.425L11.3086 1.5V11C11.3087 11.2523 11.2134 11.4953 11.0418 11.6803C10.8703 11.8653 10.6352 11.9786 10.3836 11.9975L10.3086 12H2.83559V0.5H6.30959ZM2.32359 0.5V12H1.80859C1.67599 12 1.54881 11.9473 1.45504 11.8536C1.36127 11.7598 1.30859 11.6326 1.30859 11.5V1C1.30859 0.867392 1.36127 0.740215 1.45504 0.646447C1.54881 0.552678 1.67599 0.5 1.80859 0.5H2.32359ZM9.29709 0.5V4.1885L8.24709 3.3215C8.229 3.29901 8.20657 3.2804 8.18114 3.26676C8.1557 3.25313 8.12778 3.24476 8.09904 3.24214C8.07029 3.23953 8.04132 3.24273 8.01384 3.25156C7.98636 3.26038 7.96094 3.27464 7.93909 3.2935L7.91209 3.3215L6.80859 4.1885V0.5H9.29709Z" fill="#BF608F"/>
+                                  </g>
+                                  <defs>
+                                  <clipPath id="clip0_323_3007">
+                                  <rect width="12" height="12" fill="white" transform="translate(0.308594 0.5)"/>
+                                  </clipPath>
+                                  </defs>
+                                </svg>
+                                <span className="text-[#BF608F]">{post.category}</span>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-1">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                                  </svg>
+                                  {isLoadingStats ? (
+                                    <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
+                                  ) : (
+                                    <span>{blogStats[post.id]?.views || post.views || 0}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="2"/>
+                                  </svg>
+                                  {isLoadingStats ? (
+                                    <div className="w-8 h-4 bg-gray-200 animate-pulse rounded"></div>
+                                  ) : (
+                                    <span>{blogStats[post.id]?.likes || post.likes || 0}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="2"/>
+                                  </svg>
+                                  <span>{post.comments || 0}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      ))}
+                    
+                    {blogPosts.length === 0 && (
+                      <div className="text-center py-12">
+                        <p className="font-arsenal text-gray-500">No blog posts yet. Check back soon!</p>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             )}
             

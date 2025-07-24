@@ -8,10 +8,11 @@ type BlogPostData = {
   id: string;
   title: string;
   content: string;
+  contentPost: string;
   author: string;
   authorImage: string;
   date: string;
-  image: string;
+  image: string; // Used for thumbnail in blog listings
   views: number;
   likes: number;
   comments: number;
@@ -24,12 +25,130 @@ interface BlogPostProps {
   blogStats?: Record<string, {views: number, likes: number}>;
 }
 
+// Function to parse content and insert images based on inline markers
+const parseContentWithImages = (contentPost: string) => {
+  if (!contentPost) return [];
+  
+  // Define regex patterns for different image marker formats
+  const imagePatterns = [
+    /\[IMAGE:(.*?)\]/g,                    // [IMAGE:url]
+    /\[IMG\](.*?)\[\/IMG\]/g,              // [IMG]url[/IMG]
+    /!\[(.*?)\]\((.*?)\)/g,                // ![alt](url) - Markdown style
+  ];
+  
+  const contentElements: Array<{ type: 'text' | 'image'; content: string; alt?: string; index: number }> = [];
+  let lastIndex = 0;
+  let elementIndex = 0;
+  
+  // Find all image markers and their positions
+  const imageMatches: Array<{ match: RegExpExecArray; pattern: number; start: number; end: number }> = [];
+  
+  imagePatterns.forEach((pattern, patternIndex) => {
+    let match;
+    const regex = new RegExp(pattern.source, pattern.flags);
+    while ((match = regex.exec(contentPost)) !== null) {
+      imageMatches.push({
+        match,
+        pattern: patternIndex,
+        start: match.index,
+        end: match.index + match[0].length
+      });
+    }
+  });
+  
+  // Sort matches by position in text
+  imageMatches.sort((a, b) => a.start - b.start);
+  
+  // Process content between image markers
+  imageMatches.forEach((imageMatch) => {
+    // Add text content before this image
+    if (imageMatch.start > lastIndex) {
+      const textContent = contentPost.slice(lastIndex, imageMatch.start).trim();
+      if (textContent) {
+        // Split text into paragraphs
+        const paragraphs = textContent.split(/\n\n+/).filter(p => p.trim());
+        paragraphs.forEach(paragraph => {
+          contentElements.push({
+            type: 'text',
+            content: paragraph.trim(),
+            index: elementIndex++
+          });
+        });
+      }
+    }
+    
+    // Add image
+    let imageUrl = '';
+    let altText = '';
+    
+    if (imageMatch.pattern === 0) {
+      // [IMAGE:url] format
+      imageUrl = imageMatch.match[1]?.trim() || '';
+    } else if (imageMatch.pattern === 1) {
+      // [IMG]url[/IMG] format
+      imageUrl = imageMatch.match[1]?.trim() || '';
+    } else if (imageMatch.pattern === 2) {
+      // ![alt](url) format
+      altText = imageMatch.match[1]?.trim() || '';
+      imageUrl = imageMatch.match[2]?.trim() || '';
+    }
+    
+    if (imageUrl) {
+      contentElements.push({
+        type: 'image',
+        content: imageUrl,
+        alt: altText || 'Blog post image',
+        index: elementIndex++
+      });
+    }
+    
+    lastIndex = imageMatch.end;
+  });
+  
+  // Add any remaining text after the last image
+  if (lastIndex < contentPost.length) {
+    const remainingText = contentPost.slice(lastIndex).trim();
+    if (remainingText) {
+      const paragraphs = remainingText.split(/\n\n+/).filter(p => p.trim());
+      paragraphs.forEach(paragraph => {
+        contentElements.push({
+          type: 'text',
+          content: paragraph.trim(),
+          index: elementIndex++
+        });
+      });
+    }
+  }
+  
+  // If no image markers were found, treat the entire content as text paragraphs
+  if (imageMatches.length === 0) {
+    const paragraphs = contentPost.split(/\n\n+/).filter(p => p.trim());
+    if (paragraphs.length <= 1) {
+      // Try single line breaks if double breaks don't work well
+      paragraphs.splice(0, paragraphs.length, ...contentPost.split('\n').filter(p => p.trim()));
+    }
+    
+    paragraphs.forEach(paragraph => {
+      contentElements.push({
+        type: 'text',
+        content: paragraph.trim(),
+        index: elementIndex++
+      });
+    });
+  }
+  
+  return contentElements;
+};
+
 const BlogPost: React.FC<BlogPostProps> = ({ post, onBack, blogStats }) => {
   const [currentStats, setCurrentStats] = React.useState({
     views: blogStats?.[post.id]?.views || post.views,
     likes: blogStats?.[post.id]?.likes || post.likes,
     isLiked: false
   });
+
+  // Parse the dynamic content with images
+  const contentElements = parseContentWithImages(post.contentPost || post.content);
 
   // Track view when component mounts
   React.useEffect(() => {
@@ -163,48 +282,42 @@ const BlogPost: React.FC<BlogPostProps> = ({ post, onBack, blogStats }) => {
           </div>
         </header>
 
-        {/* Blog Content */}
+        {/* Dynamic Blog Content */}
         <div className="prose prose-lg max-w-none">
-          <p className="font-arsenal text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
-            We&apos;ve all heard the phrase, &quot;The glass is half full or half empty.&quot; The difference lies in perspective. The optimist sees the glass as half full, appreciating what&apos;s there, while the pessimist focuses on the emptiness, letting it consume their thoughts and mood. Over time, this negative focus can lead to feelings of frustration, stress, and even depression.
-            <br /><br />
-            Have you ever felt a shift in your friendships? Maybe someone close to you has started distancing themselves. You might think, &quot;Why is this happening? I was just sharing my life, my struggles.&quot; It&apos;s easy to feel confused, but sometimes, the issue lies in how we express ourselves.
-            <br /><br />
-            &quot;I shared how difficult things are with my family. Why is she pulling away from me?&quot; you might ask.
-            <br /><br />
-            &quot;How often have you shared this with her recently?&quot;
-            <br /><br />
-            &quot;A few times, I guess.&quot;
-            <br /><br />
-            &quot;Why do you think she&apos;s distancing herself?&quot;
-            <br /><br />
-            &quot;I don&apos;t know... Maybe she&apos;s tired of hearing about it. But isn&apos;t that what friends are for? To be there when things get tough?&quot;
-            <br /><br />
-            The truth is, it&apos;s not that your friend doesn&apos;t care. It could be that your continuous venting without taking a moment to process your feelings is draining for them. We all tend to get into the habit of unconsciously complaining or &apos;nagging,&apos; trying to get sympathy or support. Often, this habit stems from childhood, when we cried or complained to our parents, and they responded by giving us what we wanted. As adults, we still carry that tendency, but it&apos;s time to change.
-            <br /><br />
-            So, how can we break this cycle? It starts with self-awareness.
-            <br /><br />
-            Instead of immediately venting, take a step back and meditate. This allows you to observe your thoughts without judgment. Ask yourself: Why do I feel upset about my family situation? Why am I angry at my partner&apos;s financial decision? What&apos;s making me jealous of my coworker&apos;s promotion? By acknowledging these emotions first, you gain clarity and understanding, which prevents you from unintentionally passing your unresolved feelings onto others.
-          </p>
-                      
-          {/* First Image */}
-          <div className="my-6 sm:my-8 rounded-lg overflow-hidden aspect-[16/9] w-full">
-            <Image 
-              src={post.image}
-              alt="Blog post illustration"
-              width={800}
-              height={450}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          <p className="font-arsenal text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
-            When you meditate regularly, you become more aware of your emotional patterns. You start to notice when you&apos;re spiraling into negativity before it consumes you. This awareness gives you the power to pause, breathe, and choose a different response.
-            <br /><br />
-            Remember, your friends want to support you, but they also need to protect their own mental health. By processing your emotions first through meditation, you can share your experiences in a more balanced way - not just the problems, but also your insights, growth, and gratitude.
-            <br /><br />
-            This shift doesn&apos;t just improve your relationships; it transforms your entire outlook on life. You&apos;ll find yourself focusing more on solutions rather than problems, on growth rather than struggles, and on connection rather than isolation.
-          </p>
+          {contentElements.map((element) => {
+            if (element.type === 'text') {
+              return (
+                <p key={element.index} className="font-arsenal text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
+                  {element.content.split('\n').map((line, lineIndex) => (
+                    <span key={lineIndex}>
+                      {line}
+                      {lineIndex < element.content.split('\n').length - 1 && <br />}
+                    </span>
+                  ))}
+                </p>
+              );
+            } else if (element.type === 'image') {
+              return (
+                <div key={element.index} className="my-6 sm:my-8 rounded-lg overflow-hidden aspect-[16/9] w-full">
+                  <Image 
+                    src={element.content}
+                    alt={element.alt || "Blog post illustration"}
+                    width={800}
+                    height={450}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              );
+            }
+            return null;
+          })}
+          
+          {/* Fallback content if no contentPost */}
+          {contentElements.length === 0 && (
+            <p className="font-arsenal text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
+              {post.content || "Content coming soon..."}
+            </p>
+          )}
         </div>
 
         {/* Author Bio */}
