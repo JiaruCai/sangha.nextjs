@@ -295,6 +295,78 @@ const Support: React.FC = () => {
             </form>
           </div>
         </div>
+
+        {/* Data Deletion Section */}
+        <div className="max-w-3xl mx-auto mt-16 sm:mt-20">
+          <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-lg">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-[#BF608F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h2 className="font-arsenal font-bold text-black text-2xl sm:text-3xl mb-4">
+                  Data Deletion Request
+                </h2>
+                <p className="font-arsenal text-gray-700 text-base mb-6">
+                  At JoinSangha, we respect your privacy and provide you with full control over your personal data. 
+                  If you wish to delete your account and all associated data, follow these simple steps:
+                </p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-arsenal font-semibold text-black text-lg mb-2">
+                      How to Delete Your Account
+                    </h3>
+                    <ol className="list-decimal list-inside space-y-2 font-arsenal text-gray-700">
+                      <li>Open the JoinSangha mobile app</li>
+                      <li>Navigate to Settings in the app menu</li>
+                      <li>Scroll to the Account section</li>
+                      <li>Tap on &quot;Delete Account&quot;</li>
+                      <li>Confirm your decision when prompted</li>
+                    </ol>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-arsenal font-semibold text-black text-lg mb-2">
+                      What Data Is Deleted
+                    </h3>
+                    <p className="font-arsenal text-gray-700 mb-2">
+                      When you delete your account, the following data will be permanently removed:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 font-arsenal text-gray-700">
+                      <li>Your profile information (name, email, profile picture)</li>
+                      <li>All conversation history and messages</li>
+                      <li>User preferences and settings</li>
+                      <li>Activity history and usage data</li>
+                      <li>Any other personal data associated with your account</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-6">
+                    <p className="font-arsenal text-amber-800 text-sm">
+                      <strong>Important:</strong> Account deletion is permanent and cannot be undone. 
+                      All your data will be immediately deleted from our servers with no retention period.
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <p className="font-arsenal text-gray-700 text-sm mt-4">
+                      If you need assistance with deleting your account or have questions about data deletion, 
+                      please contact our support team at{' '}
+                      <a href="mailto:support@joinsangha.com" className="text-[#BF608F] hover:underline">
+                        support@joinsangha.com
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
