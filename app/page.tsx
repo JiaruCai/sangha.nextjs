@@ -1,4 +1,4 @@
-import { generateSeoMetadata } from './components/Seo'
+import { generateSeoMetadata, StructuredData, getStructuredData } from './components/Seo'
 import Hero from './download/Hero'
 import NavBar from './download/NavBar'
 import Features from './download/Features'
@@ -13,12 +13,15 @@ export const metadata = generateSeoMetadata({
 
 export default function Home() {
   return (
-    <main className="flex flex-col">
-      <NavBar/>
-      <Hero/>
-      <Features/>
-      <Testimonials/>
-      <Footer/>
-    </main>
+    <>
+      <StructuredData data={getStructuredData()} />
+      <main className="flex flex-col">
+        <NavBar/>
+        <Hero/>
+        <Features/>
+        <Testimonials/>
+        <Footer/>
+      </main>
+    </>
   )
 }

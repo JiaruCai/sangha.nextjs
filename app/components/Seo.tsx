@@ -18,7 +18,6 @@ export function generateSeoMetadata({
   description = defaultDescription,
   url = defaultUrl,
   image = defaultImage,
-  breadcrumbs = [],
 }: SeoOptions = {}): Metadata {
   return {
     title,
@@ -41,8 +40,26 @@ export function generateSeoMetadata({
       images: [image],
       site: '@joinsangha',
     },
-    other: {
-      'application/ld+json': JSON.stringify([
+    other: {},
+  };
+}
+
+export function StructuredData({ data }: { data: Record<string, unknown>[] }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(data),
+      }}
+    />
+  );
+}
+
+export function getStructuredData() {
+  const defaultUrl = 'https://www.joinsangha.com';
+  const defaultDescription = 'JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.';
+  
+  return [
         {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
@@ -64,10 +81,10 @@ export function generateSeoMetadata({
           '@type': 'Organization',
           '@id': `${defaultUrl}/#organization`,
           name: 'JoinSangha',
-          url: url,
+          url: defaultUrl,
           logo: {
             '@type': 'ImageObject',
-            url: `${defaultUrl}${image}`,
+            url: `${defaultUrl}/joinsangha-logo.svg`,
             width: 400,
             height: 400,
           },
@@ -190,17 +207,5 @@ export function generateSeoMetadata({
             },
           },
         },
-        ...(breadcrumbs.length > 0 ? [{
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: breadcrumbs.map((crumb, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: crumb.name,
-            item: `${defaultUrl}${crumb.url}`,
-          })),
-        }] : []),
-      ]),
-    },
-  };
+      ];
 } 
