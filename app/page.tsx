@@ -6,8 +6,8 @@ import Testimonials from './download/Testimonials'
 import Footer from './download/Footer'
 
 export const metadata = generateSeoMetadata({
-  title: "JoinSangha – Meditate Anywhere, Connect Everywhere",
-  description: "From your quiet corner to the wider world, explore mindfulness practices that ground you—and connections that uplift you.",
+  title: "JoinSangha - Official Site",
+  description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
   url: "https://joinsangha.com"
 })
 
