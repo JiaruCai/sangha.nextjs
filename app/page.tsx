@@ -8,7 +8,7 @@ import Footer from './download/Footer'
 export const metadata = generateSeoMetadata({
   title: "JoinSangha - Official Site",
   description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
-  url: "https://joinsangha.com"
+  url: "https://www.joinsangha.com"
 })
 
 export default function Home() {

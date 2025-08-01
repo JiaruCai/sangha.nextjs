@@ -10,7 +10,7 @@ interface SeoOptions {
 
 const defaultTitle = 'JoinSangha - Official Site';
 const defaultDescription = 'JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.';
-const defaultUrl = 'https://joinsangha.com';
+const defaultUrl = 'https://www.joinsangha.com';
 const defaultImage = '/joinsangha-logo.svg';
 
 export function generateSeoMetadata({
@@ -108,31 +108,87 @@ export function generateSeoMetadata({
         },
         {
           '@context': 'https://schema.org',
-          '@type': 'SiteNavigationElement',
+          '@type': 'ItemList',
+          name: 'Main Navigation',
+          itemListElement: [
+            {
+              '@type': 'SiteNavigationElement',
+              position: 1,
+              name: 'Download App',
+              description: 'Download the JoinSangha meditation app for iOS and Android',
+              url: `${defaultUrl}/download`,
+            },
+            {
+              '@type': 'SiteNavigationElement',
+              position: 2,
+              name: 'Merchandise',
+              description: 'Explore mindfulness merchandise and meditation accessories',
+              url: `${defaultUrl}/merchandise`,
+            },
+            {
+              '@type': 'SiteNavigationElement',
+              position: 3,
+              name: 'Partnership',
+              description: 'Partner with JoinSangha to spread mindfulness',
+              url: `${defaultUrl}/partnership`,
+            },
+            {
+              '@type': 'SiteNavigationElement',
+              position: 4,
+              name: 'Career',
+              description: 'Join our team and help build the future of meditation',
+              url: `${defaultUrl}/career`,
+            },
+          ],
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          '@id': `${defaultUrl}/download`,
           name: 'Download App',
           description: 'Download the JoinSangha meditation app for iOS and Android',
           url: `${defaultUrl}/download`,
+          mainEntity: {
+            '@type': 'SoftwareApplication',
+            name: 'JoinSangha',
+            applicationCategory: 'HealthApplication',
+            operatingSystem: 'iOS, Android',
+          },
         },
         {
           '@context': 'https://schema.org',
-          '@type': 'SiteNavigationElement',
+          '@type': 'WebPage',
+          '@id': `${defaultUrl}/merchandise`,
           name: 'Merchandise',
           description: 'Explore mindfulness merchandise and meditation accessories',
           url: `${defaultUrl}/merchandise`,
+          mainEntity: {
+            '@type': 'Store',
+            name: 'JoinSangha Store',
+          },
         },
         {
           '@context': 'https://schema.org',
-          '@type': 'SiteNavigationElement',
+          '@type': 'WebPage',
+          '@id': `${defaultUrl}/partnership`,
           name: 'Partnership',
           description: 'Partner with JoinSangha to spread mindfulness',
           url: `${defaultUrl}/partnership`,
         },
         {
           '@context': 'https://schema.org',
-          '@type': 'SiteNavigationElement',
-          name: 'Team Blog',
-          description: 'Read insights and updates from the JoinSangha team',
-          url: `${defaultUrl}/team-blog`,
+          '@type': 'WebPage',
+          '@id': `${defaultUrl}/career`,
+          name: 'Career',
+          description: 'Join our team and help build the future of meditation',
+          url: `${defaultUrl}/career`,
+          mainEntity: {
+            '@type': 'JobPosting',
+            hiringOrganization: {
+              '@type': 'Organization',
+              name: 'JoinSangha',
+            },
+          },
         },
         ...(breadcrumbs.length > 0 ? [{
           '@context': 'https://schema.org',

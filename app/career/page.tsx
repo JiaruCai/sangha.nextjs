@@ -4,9 +4,9 @@ import Career from './Career'
 import Footer from './Footer'
 
 export const metadata = generateSeoMetadata({
-  title: "Career – JoinSangha",
-  description: "Join our mission. Build your career with us at JoinSangha. Discover open roles and perks.",
-  url: "https://joinsangha.com/career"
+  title: "Career - JoinSangha",
+  description: "Join our team and help build the future of meditation. Discover career opportunities at JoinSangha.",
+  url: "https://www.joinsangha.com/career"
 })
 
 export default function CareerPage() {

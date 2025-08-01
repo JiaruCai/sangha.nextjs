@@ -1,17 +1,31 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://joinsangha.com/sitemap.xml
+# Sitemaps
+Sitemap: https://www.joinsangha.com/sitemap.xml
 
-# Block access to admin areas if any exist
+# Block unnecessary crawling
 Disallow: /api/
 Disallow: /_next/
 Disallow: /admin/
+Disallow: /private/
+
+# Allow important pages for sitelinks
+Allow: /download
+Allow: /merchandise  
+Allow: /partnership
+Allow: /career
+Allow: /team-blog
+Allow: /support
+
+# Crawl-delay to be respectful
+Crawl-delay: 1
 
 # Allow common crawlers
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1

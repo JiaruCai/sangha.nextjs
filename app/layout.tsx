@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | JoinSangha"
   },
   description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
-  keywords: ["meditation", "mindfulness", "sangha", "community", "wellness", "mental health", "spiritual growth", "meditation app", "mindfulness platform"],
+  keywords: ["meditation", "mindfulness", "joinsangha", "join sangha", "sangha", "community", "wellness", "mental health", "spiritual growth", "meditation app", "mindfulness platform"],
   authors: [{ name: "JoinSangha Team" }],
   creator: "JoinSangha",
   publisher: "JoinSangha",
@@ -29,14 +29,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://joinsangha.com"),
+  metadataBase: new URL("https://www.joinsangha.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://joinsangha.com",
+    url: "https://www.joinsangha.com",
     siteName: "JoinSangha",
     title: "JoinSangha - Official Site",
     description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
@@ -84,13 +84,13 @@ export const metadata: Metadata = {
         "@type": "WebSite",
         "name": "JoinSangha",
         "alternateName": "JoinSangha - Official Site",
-        "url": "https://joinsangha.com",
+        "url": "https://www.joinsangha.com",
         "description": "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
             "@type": "EntryPoint",
-            "urlTemplate": "https://joinsangha.com/search?q={search_term_string}"
+            "urlTemplate": "https://www.joinsangha.com/search?q={search_term_string}"
           },
           "query-input": "required name=search_term_string"
         }
@@ -100,10 +100,10 @@ export const metadata: Metadata = {
         "@type": "Organization",
         "@id": "https://joinsangha.com/#organization",
         "name": "JoinSangha",
-        "url": "https://joinsangha.com",
+        "url": "https://www.joinsangha.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://joinsangha.com/joinsangha-logo.svg",
+          "url": "https://www.joinsangha.com/joinsangha-logo.svg",
           "width": 400,
           "height": 400
         },
@@ -147,28 +147,28 @@ export const metadata: Metadata = {
         "@type": "SiteNavigationElement",
         "name": "Download App",
         "description": "Download the JoinSangha meditation app for iOS and Android",
-        "url": "https://joinsangha.com/download"
+        "url": "https://www.joinsangha.com/download"
       },
       {
         "@context": "https://schema.org", 
         "@type": "SiteNavigationElement",
         "name": "Merchandise",
         "description": "Explore mindfulness merchandise and meditation accessories",
-        "url": "https://joinsangha.com/merchandise"
+        "url": "https://www.joinsangha.com/merchandise"
       },
       {
         "@context": "https://schema.org",
         "@type": "SiteNavigationElement", 
         "name": "Partnership",
         "description": "Partner with JoinSangha to spread mindfulness",
-        "url": "https://joinsangha.com/partnership"
+        "url": "https://www.joinsangha.com/partnership"
       },
       {
         "@context": "https://schema.org",
         "@type": "SiteNavigationElement",
         "name": "Team Blog", 
         "description": "Read insights and updates from the JoinSangha team",
-        "url": "https://joinsangha.com/team-blog"
+        "url": "https://www.joinsangha.com/team-blog"
       }
     ])
   }
