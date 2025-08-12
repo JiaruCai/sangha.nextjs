@@ -53,15 +53,15 @@ export default function Testimonials() {
   
   const testimonials = [
     {
-      quote: "JoinSangha pairs you with an actual person. This keeps me accountable. And it&apos;s helped me with my focus in the morning.",
+      quote: "I love JoinSangha. The practice garden where you accumulate flowers for each practice streak motivates me to practice more often.",
+      author: "Daveed B."
+    },
+    {
+      quote: "JoinSangha pairs you with an actual person. This keeps me accountable. And it's helped me with my focus in the morning.",
       author: "Christine G."
     },
     {
-      quote: "Connecting with someone who shares my goal has been such a uniquely beautiful and intimate experience.",
-      author: "Sarah R."
-    },
-    {
-      quote: "I noticed myself wanting to sit and practice meditation recently which wasn&apos;t always the case prior.",
+      quote: "I noticed myself wanting to sit and practice meditation recently which wasn't always the case prior.",
       author: "Austin B."
     }
   ];
