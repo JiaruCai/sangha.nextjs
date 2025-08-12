@@ -97,7 +97,7 @@ export default function Hero() {
                 height={40}
                 className="w-auto h-full"
                 onClick={() => {
-                  window.open('https://testflight.apple.com/join/ASzE4d4A', '_blank');
+                  window.open('https://apps.apple.com/us/app/joinsangha/id6746932868', '_blank');
                 }}
               />
             </a>

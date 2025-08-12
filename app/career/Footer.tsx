@@ -45,7 +45,7 @@ export default function Footer() {
             {/* App Store Buttons */}
             <div className="flex items-center flex-col sm:flex-row gap-6 sm:gap-4 mb-6 sm:mb-8 justify-center md:justify-start">
               <a 
-                href="#" 
+                href="https://apps.apple.com/us/app/joinsangha/id6746932868" 
                 className="inline-block hover:opacity-80 transition-opacity transform transition-transform duration-200 ease-out hover:-translate-y-1"
                 aria-label="Download on the App Store"
               >
