@@ -16,11 +16,11 @@ const subArsenal = Arsenal({
 
 export const metadata: Metadata = {
   title: {
-    default: "JoinSangha – Meditate Anywhere, Connect Everywhere",
+    default: "JoinSangha - Official Site",
     template: "%s | JoinSangha"
   },
-  description: "From your quiet corner to the wider world, explore mindfulness practices that ground you—and connections that uplift you.",
-  keywords: ["meditation", "mindfulness", "sangha", "community", "wellness", "mental health", "spiritual growth"],
+  description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
+  keywords: ["meditation", "mindfulness", "joinsangha", "join sangha", "sangha", "community", "wellness", "mental health", "spiritual growth", "meditation app", "mindfulness platform"],
   authors: [{ name: "JoinSangha Team" }],
   creator: "JoinSangha",
   publisher: "JoinSangha",
@@ -29,30 +29,30 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://joinsangha.com"),
+  metadataBase: new URL("https://www.joinsangha.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://joinsangha.com",
+    url: "https://www.joinsangha.com",
     siteName: "JoinSangha",
-    title: "JoinSangha – Meditate Anywhere, Connect Everywhere",
-    description: "From your quiet corner to the wider world, explore mindfulness practices that ground you—and connections that uplift you.",
+    title: "JoinSangha - Official Site",
+    description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
     images: [
       {
         url: "/joinsangha-logo.svg",
         width: 1200,
         height: 630,
-        alt: "JoinSangha - Meditation Community",
+        alt: "JoinSangha - Meditation Platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "JoinSangha – Meditate Anywhere, Connect Everywhere",
-    description: "From your quiet corner to the wider world, explore mindfulness practices that ground you—and connections that uplift you.",
+    title: "JoinSangha - Official Site",
+    description: "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
     site: "@joinsangha",
     creator: "@joinsangha",
     images: ["/joinsangha-logo.svg"],
@@ -77,6 +77,101 @@ export const metadata: Metadata = {
   verification: {
     google: "PWlESXs6pH6ATGrabq_-5A-y6A9pVYg7OoA6s9OfLoY",
   },
+  other: {
+    "application/ld+json": JSON.stringify([
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "JoinSangha",
+        "alternateName": "JoinSangha - Official Site",
+        "url": "https://www.joinsangha.com",
+        "description": "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://www.joinsangha.com/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://joinsangha.com/#organization",
+        "name": "JoinSangha",
+        "url": "https://www.joinsangha.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.joinsangha.com/joinsangha-logo.svg",
+          "width": 400,
+          "height": 400
+        },
+        "description": "JoinSangha Meditation Platform — Connect with meditation communities, discover mindfulness practices, and build deeper spiritual connections.",
+        "foundingDate": "2024",
+        "sameAs": [
+          "https://twitter.com/joinsangha",
+          "https://facebook.com/joinsangha",
+          "https://instagram.com/joinsangha"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "availableLanguage": "English"
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Meditation Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Meditation Community Access",
+                "description": "Connect with meditation communities worldwide"
+              }
+            },
+            {
+              "@type": "Offer", 
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Mindfulness Practices",
+                "description": "Discover guided meditation and mindfulness practices"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SiteNavigationElement",
+        "name": "Download App",
+        "description": "Download the JoinSangha meditation app for iOS and Android",
+        "url": "https://www.joinsangha.com/download"
+      },
+      {
+        "@context": "https://schema.org", 
+        "@type": "SiteNavigationElement",
+        "name": "Merchandise",
+        "description": "Explore mindfulness merchandise and meditation accessories",
+        "url": "https://www.joinsangha.com/merchandise"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SiteNavigationElement", 
+        "name": "Partnership",
+        "description": "Partner with JoinSangha to spread mindfulness",
+        "url": "https://www.joinsangha.com/partnership"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SiteNavigationElement",
+        "name": "Team Blog", 
+        "description": "Read insights and updates from the JoinSangha team",
+        "url": "https://www.joinsangha.com/team-blog"
+      }
+    ])
+  }
 };
 
 export default function RootLayout({

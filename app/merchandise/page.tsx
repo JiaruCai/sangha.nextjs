@@ -3,9 +3,9 @@ import NavBar from '../download/NavBar'
 import Merchandise from './Merchandise'
 
 export const metadata = generateSeoMetadata({
-  title: "Merchandise – JoinSangha",
-  description: "Check out our merchandise at JoinSangha. A collection of products to help you spread mindfulness and build meaningful connections!",
-  url: "https://joinsangha.com/merchandise"
+  title: "Merchandise - JoinSangha",
+  description: "Explore mindfulness merchandise and meditation accessories. Shop JoinSangha products to enhance your meditation practice.",
+  url: "https://www.joinsangha.com/merchandise"
 })
 
 export default function MerchandisePage() {

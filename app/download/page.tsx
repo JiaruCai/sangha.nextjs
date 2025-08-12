@@ -6,9 +6,9 @@ import Testimonials from './Testimonials'
 import Footer from './Footer'
 
 export const metadata = generateSeoMetadata({
-  title: "Download JoinSangha – Meditate Anywhere, Connect Everywhere",
-  description: "Download the JoinSangha app. From your quiet corner to the wider world, explore mindfulness practices that ground you—and connections that uplift you.",
-  url: "https://joinsangha.com/download"
+  title: "Download App - JoinSangha",
+  description: "Download the JoinSangha meditation app for iOS and Android. Connect with meditation communities and discover mindfulness practices.",
+  url: "https://www.joinsangha.com/download"
 })
 
 export default function Home() {

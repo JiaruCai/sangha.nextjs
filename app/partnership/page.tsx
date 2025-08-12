@@ -3,9 +3,9 @@ import NavBar from '../download/NavBar'
 import Partnership from './Partnership'
 
 export const metadata = generateSeoMetadata({
-  title: "Partnership – JoinSangha",
+  title: "Partnership - JoinSangha",
   description: "Partner with JoinSangha to spread mindfulness and build meaningful connections. Explore collaboration opportunities.",
-  url: "https://joinsangha.com/partnership"
+  url: "https://www.joinsangha.com/partnership"
 })
 
 export default function PartnershipPage() {
