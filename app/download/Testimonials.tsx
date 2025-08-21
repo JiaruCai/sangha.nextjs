@@ -57,12 +57,8 @@ export default function Testimonials() {
       author: "Daveed B."
     },
     {
-      quote: "JoinSangha pairs you with an actual person. This keeps me accountable. And it's helped me with my focus in the morning.",
-      author: "Christine G."
-    },
-    {
-      quote: "I noticed myself wanting to sit and practice meditation recently which wasn't always the case prior.",
-      author: "Austin B."
+      quote: "I joined without any expectations. I have little to know experience in meditation but Sangha has help me easily ease my way into finding mindfulness, peace, and relief. Use Sangha as a tool for both education through meditation and to heighten your skills in enlightenment. 10 out of 10!",
+      author: "Aaron E."
     }
   ];
 
