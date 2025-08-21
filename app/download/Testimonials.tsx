@@ -59,6 +59,10 @@ export default function Testimonials() {
     {
       quote: "I joined without any expectations. I have little to know experience in meditation but Sangha has help me easily ease my way into finding mindfulness, peace, and relief. Use Sangha as a tool for both education through meditation and to heighten your skills in enlightenment. 10 out of 10!",
       author: "Aaron E."
+    },
+    {
+      quote: "This is the best way to keep track of your daily meditation routine. This app will allow you to connect with people in your area to find the best meditation group that fits your needs. This will be the new way to maintain your mental health alongside with like minded people.",
+      author: "K.R."
     }
   ];
 
