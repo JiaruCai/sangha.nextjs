@@ -6,14 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "create-studio-auth": "tsx scripts/create-studio-auth.ts",
+    "view-studio-auth": "tsx scripts/view-studio-auth.ts",
+    "reset-studio-password": "tsx scripts/reset-studio-password.ts"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.4.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.53.0",
     "@types/pg": "^8.15.4",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.1",
     "framer-motion": "^12.17.3",
     "googleapis": "^150.0.1",
+    "jose": "^6.0.12",
+    "jsonwebtoken": "^9.0.2",
     "micro": "^10.0.1",
     "next": "^15.3.3",
     "nodemailer": "^7.0.3",
@@ -27,6 +36,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/dotenv": "^6.1.1",
     "@types/micro": "^7.3.7",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",
@@ -38,6 +49,7 @@
     "eslint-config-next": "15.3.3",
     "postcss": "^8.5.4",
     "tailwindcss": "^4.1.8",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }
