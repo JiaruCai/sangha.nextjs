@@ -500,7 +500,7 @@ const Partnership: React.FC = () => {
                 <div className="flex items-start -space-x-2">
                   <div className="w-2 h-2 mt-2 flex-shrink-0"></div>
                   <p className="font-arsenal text-gray-700">
-                    <span className="font-bold">Address:</span> Building 1OA, 201 Montgomery St, San Francisco, CA 94104
+                    <span className="font-bold">Address:</span> Building 103, 103 Montgomery St, San Francisco, CA 94129, United States
                   </p>
                 </div>
               </div>

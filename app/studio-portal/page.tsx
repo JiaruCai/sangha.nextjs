@@ -20,6 +20,7 @@ interface StudioData {
   website_url?: string
   social_media_links?: Record<string, string>
   business_hours?: Record<string, string>
+  referral_code?: string
   created_at?: string
   updated_at?: string
 }
@@ -80,6 +81,27 @@ interface AnalyticsData {
     amount: number
   }>
   totalRevenue: number
+}
+
+interface ReferralTracking {
+  referral_tracking_id: string
+  referred_user_id: string
+  referral_code: string
+  status: 'pending' | 'completed'
+  premium_months_granted: number
+  created_at: string
+  referredUser?: {
+    fullName: string | null
+    email: string | null
+  }
+}
+
+interface ReferralStats {
+  totalReferrals: number
+  pendingReferrals: number
+  completedReferrals: number
+  totalMonthsGranted: number
+  referrals: ReferralTracking[]
 }
 
 interface DashboardData {
@@ -295,11 +317,11 @@ export default function StudioPortal() {
     )
   }
 
-  return <StudioDashboard user={user} studioData={studioData} onLogout={handleLogout} />
+  return <StudioDashboard user={user} studioData={studioData} onLogout={handleLogout} setStudioData={setStudioData} />
 }
 
 function PasswordResetRequired({ 
-  user, 
+  //user, 
   onComplete 
 }: { 
   user: StudioAuthUser
@@ -446,15 +468,20 @@ function PasswordResetRequired({
 function StudioDashboard({ 
   user, 
   studioData, 
-  onLogout 
-}: StudioDashboardProps) {
+  onLogout,
+  setStudioData
+}: StudioDashboardProps & { setStudioData: React.Dispatch<React.SetStateAction<StudioData | null>> }) {
   const [activeTab, setActiveTab] = useState('overview')
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [referralStats, setReferralStats] = useState<ReferralStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [isGeneratingCode, setIsGeneratingCode] = useState(false)
+  const [copiedCode, setCopiedCode] = useState(false)
 
   useEffect(() => {
     fetchDashboardData()
+    fetchReferralStats()
   }, [user.organizerId])
 
   const fetchDashboardData = async () => {
@@ -471,6 +498,54 @@ function StudioDashboard({
       console.error('Error fetching dashboard data:', error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const fetchReferralStats = async () => {
+    try {
+      const response = await fetch('/api/studio-auth/referral-stats')
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch referral stats')
+      }
+
+      const data = await response.json()
+      setReferralStats(data)
+    } catch (error) {
+      console.error('Error fetching referral stats:', error)
+    }
+  }
+
+  const generateReferralCode = async () => {
+    setIsGeneratingCode(true)
+    try {
+      const response = await fetch('/api/studio-auth/generate-referral-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate referral code')
+      }
+
+      const data = await response.json()
+      if (data.referralCode && studioData) {
+        setStudioData({ ...studioData, referral_code: data.referralCode })
+      }
+    } catch (error) {
+      console.error('Error generating referral code:', error)
+    } finally {
+      setIsGeneratingCode(false)
+    }
+  }
+
+  const copyReferralCode = () => {
+    if (studioData?.referral_code) {
+      navigator.clipboard.writeText(studioData.referral_code)
+      setCopiedCode(true)
+      setTimeout(() => setCopiedCode(false), 2000)
     }
   }
 
@@ -531,18 +606,19 @@ function StudioDashboard({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Navigation Tabs */}
         <div className="mb-8">
-          <nav className="flex space-x-8 border-b border-pink-100">
+          <nav className="flex space-x-8 border-b border-pink-100 overflow-x-auto">
             {[
               { id: 'overview', label: 'Overview' },
               { id: 'events', label: 'Events' },
               { id: 'payouts', label: 'Payouts' },
               { id: 'analytics', label: 'Analytics' },
+              { id: 'referrals', label: 'Referrals' },
               { id: 'settings', label: 'Settings' }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-3 px-1 border-b-2 font-arsenal font-medium text-sm transition-colors duration-200 ${
+                className={`py-3 px-1 border-b-2 font-arsenal font-medium text-sm transition-colors duration-200 whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-[#BF608F] text-[#BF608F]'
                     : 'border-transparent text-gray-700 hover:text-[#BF608F] hover:border-pink-200'
@@ -574,6 +650,12 @@ function StudioDashboard({
                 <h3 className="font-arsenal font-bold text-black text-lg mb-2">Active Events</h3>
                 <p className="font-arsenal text-3xl font-bold text-[#D67BA5]">
                   {dashboardData.analytics.activeEvents}
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+                <h3 className="font-arsenal font-bold text-black text-lg mb-2">Total Referrals</h3>
+                <p className="font-arsenal text-3xl font-bold text-purple-600">
+                  {referralStats?.totalReferrals || 0}
                 </p>
               </div>
             </div>
@@ -833,6 +915,119 @@ function StudioDashboard({
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Referrals Tab */}
+        {activeTab === 'referrals' && (
+          <div className="space-y-8">
+            {/* Referral Code Section */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+              <h3 className="font-arsenal font-bold text-black text-xl mb-6">Your Referral Code</h3>
+              
+              {studioData?.referral_code ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                    <div>
+                      <p className="font-arsenal text-sm text-gray-600 mb-1">Share this code with new users</p>
+                      <p className="font-arsenal text-2xl font-bold text-[#BF608F]">{studioData.referral_code}</p>
+                    </div>
+                    <button
+                      onClick={copyReferralCode}
+                      className="px-6 py-3 bg-gradient-to-r from-[#BF608F] to-[#D67BA5] hover:from-[#A5527A] hover:to-[#C26A94] text-white font-arsenal font-bold rounded-lg transform transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg"
+                    >
+                      {copiedCode ? 'COPIED!' : 'COPY CODE'}
+                    </button>
+                  </div>
+                  
+                  <p className="font-arsenal text-sm text-gray-600">
+                    Earn 1 month of premium for each user who signs up with your referral code and completes their first booking.
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="font-arsenal text-gray-600 mb-4">You don&apos;t have a referral code yet.</p>
+                  <button
+                    onClick={generateReferralCode}
+                    disabled={isGeneratingCode}
+                    className={`px-6 py-3 font-arsenal font-bold rounded-lg transform transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 ${
+                      isGeneratingCode 
+                        ? 'bg-gray-400 text-white cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-[#BF608F] to-[#D67BA5] hover:from-[#A5527A] hover:to-[#C26A94] text-white hover:-translate-y-1 hover:shadow-lg'
+                    }`}
+                  >
+                    {isGeneratingCode ? 'GENERATING...' : 'GENERATE REFERRAL CODE'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Referral Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+                <h3 className="font-arsenal font-bold text-black text-lg mb-2">Total Referrals</h3>
+                <p className="font-arsenal text-3xl font-bold text-[#BF608F]">{referralStats?.totalReferrals || 0}</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+                <h3 className="font-arsenal font-bold text-black text-lg mb-2">Pending</h3>
+                <p className="font-arsenal text-3xl font-bold text-yellow-600">{referralStats?.pendingReferrals || 0}</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+                <h3 className="font-arsenal font-bold text-black text-lg mb-2">Completed</h3>
+                <p className="font-arsenal text-3xl font-bold text-green-600">{referralStats?.completedReferrals || 0}</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+                <h3 className="font-arsenal font-bold text-black text-lg mb-2">Months Earned</h3>
+                <p className="font-arsenal text-3xl font-bold text-purple-600">{referralStats?.totalMonthsGranted || 0}</p>
+              </div>
+            </div>
+
+            {/* Referral History */}
+            {referralStats && referralStats.referrals.length > 0 && (
+              <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
+                <h3 className="font-arsenal font-bold text-black text-xl mb-6">Referral History</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-pink-100">
+                        <th className="text-left font-arsenal font-medium text-gray-700 py-3 px-4">User</th>
+                        <th className="text-left font-arsenal font-medium text-gray-700 py-3 px-4">Email</th>
+                        <th className="text-left font-arsenal font-medium text-gray-700 py-3 px-4">Status</th>
+                        <th className="text-left font-arsenal font-medium text-gray-700 py-3 px-4">Referred On</th>
+                        <th className="text-left font-arsenal font-medium text-gray-700 py-3 px-4">Months Granted</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {referralStats.referrals.map((referral) => (
+                        <tr key={referral.referral_tracking_id} className="border-b border-pink-50">
+                          <td className="font-arsenal text-gray-900 py-3 px-4">
+                            {referral.referredUser?.fullName || 'N/A'}
+                          </td>
+                          <td className="font-arsenal text-gray-600 py-3 px-4">
+                            {referral.referredUser?.email || 'N/A'}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                              referral.status === 'completed' 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {referral.status}
+                            </span>
+                          </td>
+                          <td className="font-arsenal text-gray-600 text-sm py-3 px-4">
+                            {new Date(referral.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="font-arsenal text-gray-900 text-center py-3 px-4">
+                            {referral.premium_months_granted}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
