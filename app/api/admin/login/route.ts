@@ -1,46 +1,55 @@
-// app/api/admin/login/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 
-// Hardcoded admin passcode - change this to your desired passcode
 const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || 'FamiliaAdmin2024!'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { passcode } = body
+    const { passcode } = await request.json()
+    const cookieStore = await cookies()
 
-    if (passcode !== ADMIN_PASSCODE) {
-      return NextResponse.json(
-        { error: 'Invalid passcode' },
-        { status: 401 }
-      )
+    // Check email verification
+    const emailVerified = cookieStore.get('admin_email_verified')?.value
+    const verifiedEmail = cookieStore.get('admin_verified_email')?.value
+
+    if (!emailVerified || !verifiedEmail) {
+      return NextResponse.json({ error: 'Email verification required' }, { status: 401 })
     }
 
-    // Set simple session cookie
-    (await
-      // Set simple session cookie
-      cookies()).set('admin_session', 'authenticated', {
+    // Verify passcode
+    if (passcode !== ADMIN_PASSCODE) {
+      return NextResponse.json({ error: 'Invalid passcode' }, { status: 401 })
+    }
+
+    // Clear verification cookies
+    cookieStore.delete('admin_email_verified')
+    cookieStore.delete('admin_verified_email')
+
+    // Set authenticated session
+    cookieStore.set('admin_session', 'authenticated', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 // 24 hours
     })
 
+    // Store admin email in session
+    cookieStore.set('admin_email', verifiedEmail, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24
+    })
+
     return NextResponse.json({
       success: true,
       user: {
-        id: 'admin',
-        email: 'admin@familia.app',
+        email: verifiedEmail,
         role: 'admin'
       }
     })
   } catch (error) {
     console.error('Admin login error:', error)
-    return NextResponse.json(
-      { error: 'Login failed' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Login failed' }, { status: 500 })
   }
 }
-
