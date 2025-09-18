@@ -9,7 +9,15 @@ const supabase = createClient(
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { eventId, userId, paymentIntentId, amount } = body;
+    const { eventId, userId, paymentIntentId, amount, familiaFee, taxAmount } = body;
+
+    // Validate required fields
+    if (!eventId || !userId || !paymentIntentId || !amount) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
 
     // Create payment record
     const { data: payment, error: paymentError } = await supabase
@@ -18,17 +26,28 @@ export async function POST(request: NextRequest) {
         user_id: userId,
         event_id: eventId,
         amount: amount / 100, // Convert from cents to dollars
+        familia_fee: (familiaFee || 0) / 100, // Convert from cents to dollars
+        tax_amount: (taxAmount || 0) / 100, // Convert from cents to dollars
         payment_method: 'card',
         payment_status: 'succeeded',
         stripe_payment_intent_id: paymentIntentId,
         currency: 'USD',
-        paid_at: new Date().toISOString(),
+        // created_at and updated_at will use default values
       })
       .select()
       .single();
 
     if (paymentError) {
-      throw new Error('Failed to create payment record');
+      console.error('Supabase payment insertion error:', paymentError);
+      return NextResponse.json(
+        { 
+          error: 'Failed to create payment record',
+          details: paymentError.message,
+          code: paymentError.code,
+          hint: paymentError.hint
+        },
+        { status: 500 }
+      );
     }
 
     // Create registration record
@@ -44,14 +63,41 @@ export async function POST(request: NextRequest) {
       });
 
     if (registrationError) {
-      throw new Error('Failed to create registration');
+      console.error('Supabase registration insertion error:', registrationError);
+      
+      // Try to rollback the payment record if registration fails
+      const { error: deleteError } = await supabase
+        .from('DiscoveryTabPayments')
+        .delete()
+        .eq('payment_id', payment.payment_id);
+      
+      if (deleteError) {
+        console.error('Failed to rollback payment:', deleteError);
+      }
+
+      return NextResponse.json(
+        { 
+          error: 'Failed to create registration',
+          details: registrationError.message,
+          code: registrationError.code,
+          hint: registrationError.hint
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ 
+      success: true,
+      paymentId: payment.payment_id 
+    });
+    
   } catch (error) {
-    console.error('Error registering for event:', error);
+    console.error('Unexpected error in registration:', error);
     return NextResponse.json(
-      { error: 'Failed to complete registration' },
+      { 
+        error: 'An unexpected error occurred',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }

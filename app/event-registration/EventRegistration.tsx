@@ -9,30 +9,52 @@ import {
   useElements
 } from '@stripe/react-stripe-js';
 import { useSearchParams } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface EventInfo {
   eventId: string;
   userId: string;
-  eventTitle: string;
-  price: number;
   returnUrl: string;
+  // These will be fetched from Supabase
+  eventTitle?: string;
+  price?: number;
+  location?: string;
+  startTime?: string;
+}
+
+interface EventData {
+  event_id: string;
+  title: string;
+  price: number;
+  location: string;
+  start_time: string;
+  end_time: string;
+  description: string;
+  is_active: boolean;
 }
 
 // Payment Form Component
 const EventPaymentForm: React.FC<{
   eventInfo: EventInfo;
+  eventData: EventData;
   onPaymentSuccess: () => void;
   onPaymentError: (error: string) => void;
-}> = ({ eventInfo, onPaymentSuccess, onPaymentError }) => {
+}> = ({ eventInfo, eventData, onPaymentSuccess, onPaymentError }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [customerEmail, setCustomerEmail] = useState('');
 
   // Calculate fees (matching your mobile app logic)
-  const subtotal = eventInfo.price;
+  const subtotal = eventData.price;
   const familiaFee = Math.round(subtotal * 0.13 * 100) / 100;
   const taxes = Math.round(subtotal * 0.004 * 100) / 100;
   const total = subtotal + familiaFee + taxes;
@@ -57,7 +79,7 @@ const EventPaymentForm: React.FC<{
           amount: Math.round(total * 100), // Convert to cents
           eventId: eventInfo.eventId,
           userId: eventInfo.userId,
-          eventTitle: eventInfo.eventTitle,
+          eventTitle: eventData.title,
           customerEmail,
           familiaFee: Math.round(familiaFee * 100),
           taxAmount: Math.round(taxes * 100),
@@ -94,11 +116,15 @@ const EventPaymentForm: React.FC<{
             userId: eventInfo.userId,
             paymentIntentId,
             amount: Math.round(total * 100),
+            familiaFee: Math.round(familiaFee * 100),
+            taxAmount: Math.round(taxes * 100),
           }),
         });
 
         if (!registrationResponse.ok) {
-          throw new Error('Failed to complete registration');
+          const errorData = await registrationResponse.json();
+          console.error('Registration error:', errorData);
+          throw new Error(errorData.details || 'Failed to complete registration');
         }
 
         onPaymentSuccess();
@@ -117,8 +143,8 @@ const EventPaymentForm: React.FC<{
       
       {/* Event Details */}
       <div className="bg-[#F9F9F9] rounded-lg p-6 mb-6">
-        <h3 className="font-semibold text-lg mb-4">{eventInfo.eventTitle}</h3>
-        <div className="text-sm text-gray-600 mb-2">Online Event</div>
+        <h3 className="font-semibold text-lg mb-4">{eventData.title}</h3>
+        <div className="text-sm text-gray-600 mb-2">{eventData.location}</div>
         
         {/* Price Breakdown */}
         <div className="space-y-2 mt-4 pt-4 border-t border-gray-200">
@@ -208,28 +234,64 @@ const EventPaymentForm: React.FC<{
 export default function EventRegistration() {
   const searchParams = useSearchParams();
   const [eventInfo, setEventInfo] = useState<EventInfo | null>(null);
+  const [eventData, setEventData] = useState<EventData | null>(null);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Parse URL parameters
-    const eventId = searchParams?.get('eventId');
-    const userId = searchParams?.get('userId');
-    const eventTitle = searchParams?.get('eventTitle');
-    const price = searchParams?.get('price');
-    const returnUrl = searchParams?.get('returnUrl');
+    const fetchEventData = async () => {
+      try {
+        // Parse URL parameters (only essential ones)
+        const eventId = searchParams?.get('eventId');
+        const userId = searchParams?.get('userId');
+        const returnUrl = searchParams?.get('returnUrl');
 
-    if (eventId && userId && eventTitle && price && returnUrl) {
-      setEventInfo({
-        eventId,
-        userId,
-        eventTitle,
-        price: parseFloat(price),
-        returnUrl,
-      });
-    } else {
-      setError('Missing required information. Please try again from the app.');
-    }
+        if (!eventId || !userId || !returnUrl) {
+          setError('Missing required information. Please try again from the app.');
+          setIsLoading(false);
+          return;
+        }
+
+        // Set basic info
+        setEventInfo({
+          eventId,
+          userId,
+          returnUrl,
+        });
+
+        // Fetch event details from Supabase
+        const { data: event, error: fetchError } = await supabase
+          .from('DiscoveryTabEvents')
+          .select('*')
+          .eq('event_id', eventId)
+          .eq('is_active', true)
+          .single();
+
+        if (fetchError || !event) {
+          console.error('Error fetching event:', fetchError);
+          setError('Unable to load event details. Please try again.');
+          setIsLoading(false);
+          return;
+        }
+
+        // Verify it's an online paid event
+        if (event.location.toLowerCase() !== 'online' || event.price <= 0) {
+          setError('This registration method is only for online paid events.');
+          setIsLoading(false);
+          return;
+        }
+
+        setEventData(event);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error in fetchEventData:', err);
+        setError('An unexpected error occurred. Please try again.');
+        setIsLoading(false);
+      }
+    };
+
+    fetchEventData();
   }, [searchParams]);
 
   const handlePaymentSuccess = () => {
@@ -255,17 +317,57 @@ export default function EventRegistration() {
     }
   };
 
+  // Loading State
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#FFF7F5] to-[#F9E3E0] flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#bf608f] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading event details...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Error State
-  if (error) {
+  if (error || !eventData) {
+    // Extract error code from error message if present
+    let errorCode: string | undefined;
+    if (typeof error === 'string') {
+      if (error.includes('already registered')) errorCode = 'ALREADY_REGISTERED';
+      else if (error.includes('event full')) errorCode = 'EVENT_FULL';
+      else if (error.includes('profile required')) errorCode = 'PROFILE_REQUIRED';
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#FFF7F5] to-[#F9E3E0] flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="text-red-500 text-5xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-4">Payment Error</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <div className={`text-5xl mb-4 ${errorCode === 'ALREADY_REGISTERED' ? 'text-green-500' : 'text-red-500'}`}>
+            {errorCode === 'ALREADY_REGISTERED' ? '✓' : '⚠️'}
+          </div>
+          <h2 className="text-2xl font-bold mb-4">
+            {errorCode === 'ALREADY_REGISTERED' ? 'Already Registered' : 
+             errorCode === 'EVENT_FULL' ? 'Event Full' :
+             errorCode === 'PROFILE_REQUIRED' ? 'Profile Required' :
+             'Registration Unavailable'}
+          </h2>
+          <p className="text-gray-600 mb-6">{error || 'Unable to load event information'}</p>
+          
+          {errorCode === 'PROFILE_REQUIRED' ? (
+            <button
+              onClick={() => {
+                // Deep link back to profile creation in the app
+                window.location.href = 'JoinSangha://profile/create';
+              }}
+              className="bg-[#bf608f] text-white px-6 py-2 rounded-full font-bold hover:bg-[#a94e7a] mb-3 w-full"
+            >
+              Create Profile in App
+            </button>
+          ) : null}
+          
           <button
             onClick={handleBackToApp}
-            className="bg-[#bf608f] text-white px-6 py-2 rounded-full font-bold hover:bg-[#a94e7a]"
+            className={`${errorCode === 'PROFILE_REQUIRED' ? 'bg-gray-500' : 'bg-[#bf608f]'} text-white px-6 py-2 rounded-full font-bold hover:opacity-90`}
           >
             Return to App
           </button>
@@ -282,19 +384,10 @@ export default function EventRegistration() {
           <div className="text-green-500 text-5xl mb-4">✓</div>
           <h2 className="text-2xl font-bold mb-4">Registration Complete!</h2>
           <p className="text-gray-600 mb-6">
-            Your payment was successful. You&apos;re now registered for {eventInfo?.eventTitle}.
+            Your payment was successful. You&apos;re now registered for {eventData?.title}.
           </p>
           <p className="text-sm text-gray-500">Redirecting back to app...</p>
         </div>
-      </div>
-    );
-  }
-
-  // Loading State
-  if (!eventInfo) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#FFF7F5] to-[#F9E3E0] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#bf608f]"></div>
       </div>
     );
   }
@@ -310,13 +403,16 @@ export default function EventRegistration() {
         </div>
 
         {/* Payment Form */}
-        <Elements stripe={stripePromise}>
-          <EventPaymentForm
-            eventInfo={eventInfo}
-            onPaymentSuccess={handlePaymentSuccess}
-            onPaymentError={handlePaymentError}
-          />
-        </Elements>
+        {eventInfo && eventData && (
+          <Elements stripe={stripePromise}>
+            <EventPaymentForm
+              eventInfo={eventInfo}
+              eventData={eventData}
+              onPaymentSuccess={handlePaymentSuccess}
+              onPaymentError={handlePaymentError}
+            />
+          </Elements>
+        )}
 
         {/* Cancel Link */}
         <div className="text-center mt-6">
