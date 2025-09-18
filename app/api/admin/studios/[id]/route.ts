@@ -10,7 +10,7 @@ const supabase = createClient(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const cookieStore = cookies()
   const adminSession = (await cookieStore).get('admin_session')
@@ -19,7 +19,8 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const studioId = params.id
+  // Await the params object
+  const { id: studioId } = await params
 
   try {
     // Fetch studio details

@@ -11,7 +11,7 @@ const supabase = createClient(
 // app/api/admin/studios/[id]/toggle-active/route.ts
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const cookieStore = cookies()
   const adminSession = (await cookieStore).get('admin_session')
@@ -20,7 +20,7 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const studioId = params.id
+  const studioId = await params.then(p => p.id)
 
   try {
     // Get current status
