@@ -12,6 +12,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+  const { id } = await params
+  console.log('Resetting password for studio ID:', id)
   const cookieStore = cookies()
   const adminToken = (await cookieStore).get('admin_token')
   
