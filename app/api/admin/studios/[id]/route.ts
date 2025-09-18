@@ -58,15 +58,29 @@ export async function GET(
 
     if (eventsError) throw eventsError
 
+    // Define registration type
+    interface Registration {
+      status: string;
+      registered_at: string;
+      Users?: {
+        full_name?: string;
+        email?: string;
+      };
+      DiscoveryTabPayments?: Array<{
+        amount?: number;
+        payment_status?: string;
+      }>;
+    }
+
     // Process events data
     const processedEvents = events?.map(event => {
-      const registrations = event.DiscoveryTabEventRegistration || []
-      const totalRevenue = registrations.reduce((acc: number, reg: any) => {
+      const registrations: Registration[] = event.DiscoveryTabEventRegistration || []
+      const totalRevenue = registrations.reduce((acc: number, reg: Registration) => {
         const payment = reg.DiscoveryTabPayments?.[0]
         return acc + (payment?.amount || 0)
       }, 0)
 
-      const attendeeList = registrations.map((reg: any) => ({
+      const attendeeList = registrations.map((reg: Registration) => ({
         user_name: reg.Users?.full_name,
         user_email: reg.Users?.email,
         registration_status: reg.status,

@@ -74,10 +74,15 @@ export async function GET(request: NextRequest) {
     const studiosOverview = studios?.map(studio => {
       const events = studio.DiscoveryTabEvents || []
       
+      interface EventRegistration {
+        registration_id: string;
+        registered_at: string;
+      }
+
       // Filter bookings within date range
-      const bookingsInRange = events.reduce((acc: number, event: any) => {
+      const bookingsInRange = events.reduce((acc: number, event: { DiscoveryTabEventRegistration?: EventRegistration[] }) => {
         if (startDate) {
-          const registrationsInRange = event.DiscoveryTabEventRegistration?.filter((reg: any) => 
+          const registrationsInRange = event.DiscoveryTabEventRegistration?.filter((reg: EventRegistration) => 
             new Date(reg.registered_at) >= startDate
           ).length || 0
           return acc + registrationsInRange
@@ -88,8 +93,12 @@ export async function GET(request: NextRequest) {
       }, 0)
       
       // Calculate revenue only for bookings within date range
-      const revenueInRange = events.reduce((acc: number, event: any) => {
+      const revenueInRange = events.reduce((acc: number, event: {
+        price: number;
+        DiscoveryTabEventRegistration?: { registered_at: string }[];
+      }) => {
         if (startDate) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const registrationsInRange = event.DiscoveryTabEventRegistration?.filter((reg: any) => 
             new Date(reg.registered_at) >= startDate
           ).length || 0
@@ -101,11 +110,15 @@ export async function GET(request: NextRequest) {
       }, 0)
       
       // Total stats (all time)
-      const totalBookings = events.reduce((acc: number, event: any) => 
-        acc + (event.DiscoveryTabEventRegistration?.length || 0), 0
+      const totalBookings = events.reduce(
+        (acc: number, event: { DiscoveryTabEventRegistration?: { registration_id: string; registered_at: string }[] }) =>
+          acc + (event.DiscoveryTabEventRegistration?.length || 0),
+        0
       )
-      const totalRevenue = events.reduce((acc: number, event: any) => 
-        acc + (event.price * (event.DiscoveryTabEventRegistration?.length || 0)), 0
+      const totalRevenue = events.reduce(
+        (acc: number, event: { price: number; DiscoveryTabEventRegistration?: { registration_id: string; registered_at: string }[] }) =>
+          acc + (event.price * (event.DiscoveryTabEventRegistration?.length || 0)),
+        0
       )
       
       return {
@@ -114,7 +127,7 @@ export async function GET(request: NextRequest) {
         email: studio.studioauth[0]?.email || '',
         created_at: studio.created_at,
         total_events: events.length,
-        active_events: events.filter((e: any) => e.is_active).length,
+        active_events: events.filter((e: { is_active: boolean }) => e.is_active).length,
         total_revenue: totalRevenue,
         total_bookings: totalBookings,
         revenue_in_period: revenueInRange,
@@ -251,12 +264,22 @@ export async function GET(request: NextRequest) {
     const completedReferralsInPeriod = referralsInPeriod.filter(r => r.status === 'completed').length
 
     // Calculate referrals per studio
-    const studioReferralCounts = referralData?.reduce((acc: any, ref: any) => {
-      if (ref.referrer_type === 'studio' && ref.referrer_studio_id) {
-        acc[ref.referrer_studio_id] = (acc[ref.referrer_studio_id] || 0) + 1
-      }
-      return acc
-    }, {}) || {}
+    interface StudioReferralAccumulator {
+      [studioId: string]: number;
+    }
+    interface ReferralType {
+      referrer_type: string;
+      referrer_studio_id?: string;
+    }
+    const studioReferralCounts = referralData?.reduce(
+      (acc: StudioReferralAccumulator, ref: ReferralType) => {
+        if (ref.referrer_type === 'studio' && ref.referrer_studio_id) {
+          acc[ref.referrer_studio_id] = (acc[ref.referrer_studio_id] || 0) + 1
+        }
+        return acc
+      },
+      {}
+    ) || {}
 
     // Update studios with referral counts
     studiosOverview.forEach(studio => {
@@ -264,7 +287,23 @@ export async function GET(request: NextRequest) {
     })
 
     // Get top referrers
-    const referrerStats = referralData?.reduce((acc: any, ref: any) => {
+    interface ReferrerStat {
+      referrer_name: string;
+      referrer_type: string;
+      referral_count: number;
+      completed_count: number;
+    }
+
+    interface Referral {
+      referrer_type: string;
+      referrer_user_id?: string;
+      referrer_studio_id?: string;
+      status: string;
+      Users?: { full_name?: string }[]; // Supabase returns arrays
+      DiscoveryTabOrganizers?: { name?: string }[]; // Supabase returns arrays
+    }
+
+    const referrerStats = referralData?.reduce<Record<string, ReferrerStat>>((acc, ref: Referral) => {
       const key = ref.referrer_type === 'studio' 
         ? `studio_${ref.referrer_studio_id}`
         : `user_${ref.referrer_user_id}`
@@ -272,8 +311,8 @@ export async function GET(request: NextRequest) {
       if (!acc[key]) {
         acc[key] = {
           referrer_name: ref.referrer_type === 'studio' 
-            ? ref.DiscoveryTabOrganizers?.name || 'Unknown Studio'
-            : ref.Users?.full_name || 'Unknown User',
+            ? ref.DiscoveryTabOrganizers?.[0]?.name || 'Unknown Studio'
+            : ref.Users?.[0]?.full_name || 'Unknown User',
           referrer_type: ref.referrer_type,
           referral_count: 0,
           completed_count: 0
@@ -289,7 +328,7 @@ export async function GET(request: NextRequest) {
     }, {}) || {}
 
     const topReferrers = Object.values(referrerStats)
-      .sort((a: any, b: any) => b.referral_count - a.referral_count)
+      .sort((a: ReferrerStat, b: ReferrerStat) => b.referral_count - a.referral_count)
       .slice(0, 10)
 
     // Fetch recent users with pagination and date filter

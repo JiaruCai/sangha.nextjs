@@ -10,17 +10,18 @@ const supabase = createClient(
 // app/api/admin/studios/[id]/reset-password/route.ts
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const cookieStore = cookies()
   const adminToken = (await cookieStore).get('admin_token')
-
+  
   if (!adminToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
-  const studioId = params.id
-
+  
+  // Await the params
+  const { id: studioId } = await params
+  
   try {
     // Generate a temporary password
     const tempPassword = `Temp${Math.random().toString(36).slice(-8)}!`
@@ -38,16 +39,14 @@ export async function POST(
         locked_until: null
       })
       .eq('organizer_id', studioId)
-
-    if (error) throw error
-
-    // In production, send an email to the studio with the temporary password
     
-    return NextResponse.json({ 
+    if (error) throw error
+    
+    // In production, send an email to the studio with the temporary password
+    return NextResponse.json({
       success: true,
       message: 'Password has been reset successfully'
     })
-    
   } catch (error) {
     console.error('Password reset error:', error)
     return NextResponse.json(

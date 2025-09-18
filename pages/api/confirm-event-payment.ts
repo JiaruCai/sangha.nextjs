@@ -13,8 +13,7 @@ export async function POST(request: NextRequest) {
     const { 
       paymentId, 
       eventId, 
-      userId, 
-      stripePaymentIntentId,
+      userId,
       stripeCustomerId 
     } = body;
 
@@ -47,7 +46,11 @@ export async function POST(request: NextRequest) {
 
     let registrationId;
 
-    if (existingRegistration && (!checkError || checkError.code !== 'PGRST116')) {
+    // Explicitly type checkError to allow access to 'code'
+    type SupabaseError = { code?: string; message?: string };
+    const typedCheckError = checkError as SupabaseError | null;
+
+    if (existingRegistration && (!typedCheckError || typedCheckError.code !== 'PGRST116')) {
       // Registration exists - update it
       const { data: updatedReg, error: updateError } = await supabase
         .from('DiscoveryTabEventRegistration')

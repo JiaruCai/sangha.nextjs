@@ -3,6 +3,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
+
 
 interface AdminUser {
   id: string
@@ -110,12 +112,8 @@ export default function AdminDashboard() {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize] = useState(100)
 
-  useEffect(() => {
-    checkAdminAuth()
-    fetchDashboardData()
-  }, [dateFilter, currentPage])
 
-  const checkAdminAuth = async () => {
+  const checkAdminAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/admin/verify')
       const data = await response.json()
@@ -130,9 +128,10 @@ export default function AdminDashboard() {
       console.error('Auth check error:', error)
       router.push('/admin-login')
     }
-  }
+  }, [router])
 
-  const fetchDashboardData = async () => {
+
+  const fetchDashboardData = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/admin/dashboard?dateFilter=${dateFilter}&page=${currentPage}&pageSize=${pageSize}`
@@ -149,7 +148,15 @@ export default function AdminDashboard() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [dateFilter, currentPage, pageSize])
+
+
+  useEffect(() => {
+    checkAdminAuth()
+    fetchDashboardData()
+  }, [dateFilter, currentPage, checkAdminAuth, fetchDashboardData])
+
+  
 
   const handleLogout = async () => {
     try {
