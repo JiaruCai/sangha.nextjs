@@ -834,9 +834,9 @@ function StudioDashboard({
                 <p className="font-arsenal text-3xl font-bold text-green-600 mb-4">
                   ${dashboardData.payouts.currentBalance.toFixed(2)}
                 </p>
-                <button className="w-full bg-gradient-to-r from-[#BF608F] to-[#D67BA5] hover:from-[#A5527A] hover:to-[#C26A94] text-white font-arsenal font-bold px-4 py-3 rounded-lg transform transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg">
+                {/* <button className="w-full bg-gradient-to-r from-[#BF608F] to-[#D67BA5] hover:from-[#A5527A] hover:to-[#C26A94] text-white font-arsenal font-bold px-4 py-3 rounded-lg transform transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg">
                   Request Payout
-                </button>
+                </button> */}
               </div>
               <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
                 <h3 className="font-arsenal font-bold text-black text-lg mb-2">Pending Payouts</h3>
