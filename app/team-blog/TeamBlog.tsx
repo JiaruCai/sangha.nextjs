@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useScrollAnimation } from '../useScrollAnimation';
 import Footer from '../career/Footer';
 import NavBar from '../download/NavBar';
-import BlogPost from './BlogPost';
 
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcQdRytGznfkar_e-DexGkIKYmxZGZN5e7BIZgs6APETdlwcHd4RYP1w21vx7A6J6wYJ-Qfq74yob-/pub?output=csv';
 type TeamMember = {
@@ -16,6 +16,7 @@ type TeamMember = {
 
 type BlogPost = {
   id: string;
+  slug: string;
   title: string;
   content: string;
   contentPost: string;
@@ -105,7 +106,6 @@ const TeamBlog: React.FC = () => {
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
   const [activeTab, setActiveTab] = useState('new-issues');
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
     // Fetch team members
@@ -141,26 +141,6 @@ const TeamBlog: React.FC = () => {
   }, []);
 
   const arrangedMembers = arrangeMembersForDisplay(teamMembers);
-
-  const handleBack = () => {
-    setSelectedPost(null);
-    // Refresh stats when returning from individual post
-    setIsLoadingStats(true);
-    fetch('/api/get-blog-stats')
-      .then(res => res.json())
-      .then(stats => {
-        setBlogStats(stats);
-        setIsLoadingStats(false);
-      })
-      .catch(err => {
-        console.warn('Could not refresh blog stats:', err);
-        setIsLoadingStats(false);
-      });
-  };
-
-  if (selectedPost) {
-    return <BlogPost post={selectedPost} onBack={handleBack} blogStats={blogStats} />;
-  }
 
   return (
     <main className="relative min-h-screen bg-gradient-to-r from-[#F9E3E0] via-[#FFFFFF] to-[#F9E3E0] flex flex-col overflow-x-hidden">
@@ -217,11 +197,12 @@ const TeamBlog: React.FC = () => {
                 ) : (
                   <>
                     {blogPosts.map((post) => (
-                      <article 
-                        key={post.id} 
-                        className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
-                        onClick={() => setSelectedPost(post)}
+                      <Link
+                        key={post.id}
+                        href={`/team-blog/${post.slug}`}
+                        className="block"
                       >
+                        <article className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer">
                         <div className="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
                           {post.authorImage ? (
                             <Image 
@@ -306,6 +287,7 @@ const TeamBlog: React.FC = () => {
                           </div>
                         </div>
                       </article>
+                      </Link>
                     ))}
                     
                     {blogPosts.length === 0 && (
@@ -330,11 +312,12 @@ const TeamBlog: React.FC = () => {
                     {[...blogPosts]
                       .sort((a, b) => (blogStats[b.id]?.views || b.views || 0) - (blogStats[a.id]?.views || a.views || 0))
                       .map((post) => (
-                        <article 
-                          key={post.id} 
-                          className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
-                          onClick={() => setSelectedPost(post)}
+                        <Link
+                          key={post.id}
+                          href={`/team-blog/${post.slug}`}
+                          className="block"
                         >
+                          <article className="flex flex-col sm:flex-row gap-6 p-4 sm:p-6 border border-gray-100 rounded-lg hover:shadow-md transition-shadow cursor-pointer">
                           <div className="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
                             {post.authorImage ? (
                               <Image 
@@ -419,6 +402,7 @@ const TeamBlog: React.FC = () => {
                             </div>
                           </div>
                         </article>
+                        </Link>
                       ))}
                     
                     {blogPosts.length === 0 && (
