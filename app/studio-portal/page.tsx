@@ -478,11 +478,76 @@ function StudioDashboard({
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [isGeneratingCode, setIsGeneratingCode] = useState(false)
   const [copiedCode, setCopiedCode] = useState(false)
+  const [isEditingSettings, setIsEditingSettings] = useState(false)
+  const [isSavingSettings, setIsSavingSettings] = useState(false)
+  const [settingsForm, setSettingsForm] = useState({
+    name: studioData?.name || '',
+    description: studioData?.description || '',
+    contact_email: studioData?.contact_email || '',
+    phone: studioData?.phone || '',
+    address: studioData?.address || '',
+    website_url: studioData?.website_url || ''
+  })
 
   useEffect(() => {
     fetchDashboardData()
     fetchReferralStats()
   }, [user.organizerId])
+
+  useEffect(() => {
+    // Update the settings form when studioData changes
+    if (studioData) {
+      setSettingsForm({
+        name: studioData.name || '',
+        description: studioData.description || '',
+        contact_email: studioData.contact_email || '',
+        phone: studioData.phone || '',
+        address: studioData.address || '',
+        website_url: studioData.website_url || ''
+      })
+    }
+  }, [studioData])
+
+  const handleSaveSettings = async () => {
+    setIsSavingSettings(true)
+    try {
+      const response = await fetch('/api/studio-auth/update-profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settingsForm)
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to update profile')
+      }
+
+      const data = await response.json()
+      if (data.studioData) {
+        setStudioData(data.studioData)
+        setIsEditingSettings(false)
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error)
+      alert('Failed to save settings. Please try again.')
+    } finally {
+      setIsSavingSettings(false)
+    }
+  }
+
+  const handleCancelEdit = () => {
+    // Reset form to original values
+    setSettingsForm({
+      name: studioData?.name || '',
+      description: studioData?.description || '',
+      contact_email: studioData?.contact_email || '',
+      phone: studioData?.phone || '',
+      address: studioData?.address || '',
+      website_url: studioData?.website_url || ''
+    })
+    setIsEditingSettings(false)
+  }
 
   const fetchDashboardData = async () => {
     try {
@@ -1036,15 +1101,48 @@ function StudioDashboard({
           <div className="space-y-8">
             {/* Basic Information */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[-4px_2px_8px_0px] shadow-pink-100">
-              <h3 className="font-arsenal font-bold text-black text-xl mb-6">Basic Information</h3>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-arsenal font-bold text-black text-xl">Basic Information</h3>
+                <div className="space-x-3">
+                  {isEditingSettings ? (
+                    <>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="px-4 py-2 font-arsenal font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSaveSettings}
+                        disabled={isSavingSettings}
+                        className={`px-4 py-2 font-arsenal font-bold rounded-lg transition-all duration-200 ${
+                          isSavingSettings
+                            ? 'bg-gray-400 text-white cursor-not-allowed'
+                            : 'bg-gradient-to-r from-[#BF608F] to-[#D67BA5] hover:from-[#A5527A] hover:to-[#C26A94] text-white hover:shadow-lg'
+                        }`}
+                      >
+                        {isSavingSettings ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setIsEditingSettings(true)}
+                      className="px-4 py-2 font-arsenal font-medium text-[#BF608F] border border-[#BF608F] rounded-lg hover:bg-pink-50 transition-colors duration-200"
+                    >
+                      Edit Information
+                    </button>
+                  )}
+                </div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block font-arsenal text-gray-700 text-sm font-medium mb-2">Studio Name</label>
                   <input
                     type="text"
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
-                    value={studioData?.name || ''}
-                    readOnly
+                    value={isEditingSettings ? settingsForm.name : (studioData?.name || '')}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, name: e.target.value }))}
+                    readOnly={!isEditingSettings}
                     placeholder="Studio Name"
                     title="Studio Name"
                   />
@@ -1053,12 +1151,13 @@ function StudioDashboard({
                   <label className="block font-arsenal text-gray-700 text-sm font-medium mb-2">Login Email</label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal bg-gray-50"
                     value={user.email || ''}
                     readOnly
                     placeholder="Login Email"
-                    title="Login Email"
+                    title="Login Email cannot be changed"
                   />
+                  <p className="font-arsenal text-xs text-gray-500 mt-1">Login email cannot be changed</p>
                 </div>
               </div>
               <div className="mt-6">
@@ -1066,8 +1165,9 @@ function StudioDashboard({
                 <textarea
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
                   rows={4}
-                  value={studioData?.description || ''}
-                  readOnly
+                  value={isEditingSettings ? settingsForm.description : (studioData?.description || '')}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, description: e.target.value }))}
+                  readOnly={!isEditingSettings}
                   placeholder="Studio description"
                   title="Studio description"
                 />
@@ -1083,8 +1183,9 @@ function StudioDashboard({
                   <input
                     type="email"
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
-                    value={studioData?.contact_email || ''}
-                    readOnly
+                    value={isEditingSettings ? settingsForm.contact_email : (studioData?.contact_email || '')}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, contact_email: e.target.value }))}
+                    readOnly={!isEditingSettings}
                     placeholder="Contact Email"
                     title="Contact Email"
                   />
@@ -1094,8 +1195,9 @@ function StudioDashboard({
                   <input
                     type="tel"
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
-                    value={studioData?.phone || ''}
-                    readOnly
+                    value={isEditingSettings ? settingsForm.phone : (studioData?.phone || '')}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, phone: e.target.value }))}
+                    readOnly={!isEditingSettings}
                     placeholder="Phone Number"
                     title="Phone Number"
                   />
@@ -1106,8 +1208,9 @@ function StudioDashboard({
                 <input
                   type="text"
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
-                  value={studioData?.address || ''}
-                  readOnly
+                  value={isEditingSettings ? settingsForm.address : (studioData?.address || '')}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, address: e.target.value }))}
+                  readOnly={!isEditingSettings}
                   placeholder="Studio Address"
                   title="Studio Address"
                 />
@@ -1117,8 +1220,9 @@ function StudioDashboard({
                 <input
                   type="url"
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-700 font-arsenal focus:outline-none focus:ring-2 focus:ring-[#BF608F] focus:border-transparent"
-                  value={studioData?.website_url || ''}
-                  readOnly
+                  value={isEditingSettings ? settingsForm.website_url : (studioData?.website_url || '')}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, website_url: e.target.value }))}
+                  readOnly={!isEditingSettings}
                   placeholder="Website URL"
                   title="Website URL"
                 />
