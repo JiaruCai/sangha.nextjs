@@ -55,7 +55,7 @@ const EventPaymentForm: React.FC<{
 
   // Calculate fees (matching your mobile app logic)
   const subtotal = eventData.price;
-  const familiaFee = Math.round(subtotal * 0.13 * 100) / 100;
+  const familiaFee = Math.round(subtotal * 0.029 * 100) / 100 + 0.3; // 2.9% + $0.30
   const taxes = Math.round(subtotal * 0.004 * 100) / 100;
   const total = subtotal + familiaFee + taxes;
 
@@ -171,7 +171,7 @@ const EventPaymentForm: React.FC<{
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block font-arsenal text-gray-700 text-sm font-medium mb-2">
-            Email Address
+            Receipt Email Address
           </label>
           <input
             type="email"
