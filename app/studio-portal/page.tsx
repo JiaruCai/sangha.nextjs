@@ -84,7 +84,7 @@ interface AnalyticsData {
 }
 
 interface ReferralTracking {
-  referral_tracking_id: string
+  id: string
   referred_user_id: string
   referral_code: string
   status: 'pending' | 'completed'
@@ -513,12 +513,10 @@ function StudioDashboard({
     try {
       const response = await fetch('/api/studio-auth/update-profile', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(settingsForm)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settingsForm),
       })
-      
+
       if (!response.ok) {
         throw new Error('Failed to update profile')
       }
@@ -1064,7 +1062,7 @@ function StudioDashboard({
                     </thead>
                     <tbody>
                       {referralStats.referrals.map((referral) => (
-                        <tr key={referral.referral_tracking_id} className="border-b border-pink-50">
+                        <tr key={referral.id} className="border-b border-pink-50">
                           <td className="font-arsenal text-gray-900 py-3 px-4">
                             {referral.referredUser?.fullName || 'N/A'}
                           </td>

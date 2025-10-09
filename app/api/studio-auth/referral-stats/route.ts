@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     const { data: referrals, error: referralsError } = await supabase
       .from('referral_tracking')
       .select(`
-        referral_tracking_id,
+        id,
         referred_user_id,
         referral_code,
         status,
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
 
     // Format referrals for frontend
     const formattedReferrals = referrals?.map(referral => ({
-      referral_tracking_id: referral.referral_tracking_id,
+      referral_tracking_id: referral.id,
       referred_user_id: referral.referred_user_id,
       referral_code: referral.referral_code,
       status: referral.status,
